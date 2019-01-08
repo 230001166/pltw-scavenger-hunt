@@ -1,6 +1,6 @@
 {
-  "name": "Node.js WebSocket Example",
-  "description": "Part of the Using WebSockets on Heroku Tutorial",
-  "repository": "https://github.com/heroku-examples/node-websockets",
+  "name": "PLTW Scavenger Hunt",
+  "description": "A scavenger hunt web app",
+  "repository": "https://github.com/230001166/pltw-scavenger-hunt",
   "keywords": ["node", "websocket"]
 }
