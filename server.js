@@ -18,6 +18,8 @@ wss.on("connection", function connection(ws, req) {
 });
 
 setInterval(() => {
-  let date = { text: new Date().toTimeString() };
-  client.send(JSON.stringify (date)); console.log ("Sending message...");
+  wss.clients.forEach((client) => {
+    let date = { text: new Date().toTimeString() };
+    client.send(JSON.stringify (date)); console.log ("Sending message...");
+  });
 }, 1000);
