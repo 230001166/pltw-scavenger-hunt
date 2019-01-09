@@ -25,6 +25,17 @@
 	<p id = "upload-qr-code">Upload code</p>
 	<p id = "see-scanned-codes">See scanned codes</p>
 </div>
+<script>
+	var HOST = location.origin.replace(/^http/, "ws");
+	var ws = new WebSocket(HOST);
+	var el = document.getElementById("wildlife-info");
+
+	ws.onmessage = function(event) {
+		let message = JSON.parse(event.data);
+		el.innerHTML = message.text;
+	};
+
+  </script>
 </body>
 
 <style>

@@ -19,3 +19,9 @@ wss.on("connection", function connection(ws, req) {
     let message = JSON.parse(event.data);
   };
 });
+
+setInterval(() => {
+  wss.clients.forEach((client) => {
+    client.send(new Date().toTimeString());
+  });
+}, 1000);
