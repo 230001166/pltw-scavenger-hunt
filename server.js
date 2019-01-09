@@ -14,7 +14,9 @@ const server = express()
 const wss = new SocketServer({ server, clientTracking: true });
 
 wss.on("connection", function connection(ws, req) {
-
+  wss.clients.forEach((client) => {
+    client.send(new Date().toTimeString());
+  });
   ws.onmessage = function(event) {
     let message = JSON.parse(event.data);
   };
