@@ -15,11 +15,8 @@ const wss = new SocketServer({ server, clientTracking: true });
 
 wss.on("connection", function connection(ws, req) {
   wss.clients.forEach((client) => {
-    client.send(new Date().toTimeString());
+    client.send(new Date().toTimeString()); console.log ("Sending message...");
   });
-  ws.onmessage = function(event) {
-    let message = JSON.parse(event.data);
-  };
 });
 
 setInterval(() => {
