@@ -14,13 +14,10 @@ const server = express()
 const wss = new SocketServer({ server, clientTracking: true });
 
 wss.on("connection", function connection(ws, req) {
-  wss.clients.forEach((client) => {
-    client.send(new Date().toTimeString()); console.log ("Sending message...");
-  });
+
 });
 
 setInterval(() => {
-  wss.clients.forEach((client) => {
-    client.send(new Date().toTimeString());
-  });
+  let date = { text: new Date().toTimeString() };
+  client.send(JSON.stringify (date)); console.log ("Sending message...");
 }, 1000);
