@@ -25,7 +25,7 @@ const wss = new SocketServer({ server, clientTracking: true });
 
 function connectToDatabase() {
   client.connect();
-  var res = client.query("SELECT * FROM spot_table;");
+  let res = client.query("SELECT * FROM spot_table");
   res.rows.forEach(row => {
     console.log(row);
   });
