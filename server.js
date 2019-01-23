@@ -14,9 +14,8 @@ const client = new Client({
 client.connect();
 
 client.query(
-  "SELECT table_schema,table_name FROM information_schema.tables;",
-  (err, res) => {
-    if (err) throw err;
+  "SELECT * FROM spot_table;",
+  (res) => {
     for (let row of res.rows) {
       console.log(JSON.stringify(row));
     }
@@ -30,8 +29,7 @@ const INDEX = path.join(__dirname, "index.html");
 const server = express()
   .use((req, res) => {
     res.sendFile(INDEX);
-    let err = false;
-    client.query(err, res);
+    client.query(res);
   })
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
