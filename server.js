@@ -11,8 +11,6 @@ const client = new Client({
   ssl: true
 });
 
-
-
 const PORT = process.env.PORT || 3000;
 const INDEX = path.join(__dirname, "index.html");
 
@@ -25,16 +23,15 @@ const server = express()
 
 const wss = new SocketServer({ server, clientTracking: true });
 
-wss.on("connection", function connection(ws, req) {
-
-  client.connect();
-
-  const query = client.query('SELECT * FROM spot_table');
-
-  query.on('row', (row) => {
-    console.log(JSON.stringify(row));
+async function connectToDatabase() {
+  await client.connect();
+  var res = await client.query("SELECT * FROM ");
+  res.rows.forEach(row => {
+    console.log(row);
   });
-
+}
+wss.on("connection", function connection(ws, req) {
+  connectToDatabase();
 });
 
 setInterval(() => {
