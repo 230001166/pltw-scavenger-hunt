@@ -23,9 +23,9 @@ const server = express()
 
 const wss = new SocketServer({ server, clientTracking: true });
 
-async function connectToDatabase() {
-  await client.connect();
-  var res = await client.query("SELECT * FROM ");
+function connectToDatabase() {
+  client.connect();
+  var res = client.query("SELECT * FROM spot_table;");
   res.rows.forEach(row => {
     console.log(row);
   });
