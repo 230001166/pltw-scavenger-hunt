@@ -29,7 +29,7 @@ async function connectToDatabase() {
   res.rows.forEach(row => {
     console.log(row);
   });
-}
+} 
 wss.on("connection", function connection(ws, req) {
   connectToDatabase();
 });
