@@ -32,6 +32,8 @@ const wss = new SocketServer({ server, clientTracking: true });
 
 wss.on("connection", function connection(ws, req) {
 
+  let err = false;
+  client.query (err, res);
 });
 
 setInterval(() => {
