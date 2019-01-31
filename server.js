@@ -25,9 +25,13 @@ const wss = new SocketServer({ server, clientTracking: true });
 
 function connectToDatabase() {
   client.connect();
-  let res = client.query("SELECT * FROM spot_table");
-  res.rows.forEach(row => {
-    console.log(row);
+
+  client.query('SELECT table_schema,table_name FROM information_schema.tables;', (err, res) => {
+    if (err) throw err;
+    for (let row of res.rows) {
+      console.log(JSON.stringify(row));
+    }
+    client.end();
   });
 } 
 wss.on("connection", function connection(ws, req) {
