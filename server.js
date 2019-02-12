@@ -18,14 +18,15 @@ const server = express()
   .use((req, res) => res.sendFile(INDEX) )
   //.get('/', (req, res) => res.render('pages/index'))
   .get('/', async (req, res) => {
-    console.log ("db");
     try {
-      const client = await pool.connect()
+      console.log ("db");
+      const client = await pool.connect();
       const result = await client.query('SELECT * FROM test_table');
       const results = { 'results': (result) ? result.rows : null};
       res.render('pages/db', results );
       client.release();
     } catch (err) {
+      console.log ("uh oh");
       console.error(err);
       res.send("Error " + err);
     }
