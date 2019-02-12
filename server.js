@@ -16,8 +16,8 @@ const INDEX = path.join(__dirname, "index.html");
 
 const server = express()
   .use((req, res) => res.sendFile(INDEX) )
-  .get('/', (req, res) => res.render('pages/index'))
-  .get('/db', async (req, res) => {
+  //.get('/', (req, res) => res.render('pages/index'))
+  .get('/', async (req, res) => {
     console.log ("db");
     try {
       const client = await pool.connect()
@@ -41,6 +41,5 @@ setInterval(() => {
   wss.clients.forEach(client => {
     let date = { text: new Date().toTimeString() };
     client.send(JSON.stringify(date));
-    console.log("Sending message...");
   });
 }, 1000);
