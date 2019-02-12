@@ -31,6 +31,7 @@ const server = express()
       res.send("Error " + err);
     }
   })
+  .get('/', (req, res) => res.render('pages/index'))
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 const wss = new SocketServer({ server, clientTracking: true });
