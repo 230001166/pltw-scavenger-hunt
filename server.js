@@ -19,6 +19,7 @@ const server = express()
     res.sendFile(INDEX);
     client.query(res);
   })
+  .get('/', (req, res) => res.render('pages/index'))
   .get('/db', async (req, res) => {
     try {
       const client = await pool.connect()
@@ -31,7 +32,6 @@ const server = express()
       res.send("Error " + err);
     }
   })
-  .get('/', (req, res) => res.render('pages/index'))
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 const wss = new SocketServer({ server, clientTracking: true });
