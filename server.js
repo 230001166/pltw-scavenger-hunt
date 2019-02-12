@@ -18,6 +18,7 @@ const server = express()
   .use((req, res) => res.sendFile(INDEX) )
   .get('/', (req, res) => res.render('pages/index'))
   .get('/db', async (req, res) => {
+    console.log ("db");
     try {
       const client = await pool.connect()
       const result = await client.query('SELECT * FROM test_table');
