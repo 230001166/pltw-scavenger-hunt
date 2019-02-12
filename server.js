@@ -17,9 +17,7 @@ const INDEX = path.join(__dirname, "index.html");
 const server = express()
   .use((req, res) => {
     res.sendFile(INDEX);
-    pool.query(res);
   })
-  .get('/', (req, res) => res.render('pages/index'))
   .get('/db', async (req, res) => {
     try {
       const client = await pool.connect()
