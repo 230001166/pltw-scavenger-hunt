@@ -19,18 +19,17 @@ const server = express()
   .get('/', (req, res) => res.render('pages/index'))
   .get('/db', async (req, res) => {
     try {
-      console.log ("db");
       const client = await pool.connect();
       const result = await client.query('SELECT * FROM test_table');
       const results = { 'results': (result) ? result.rows : null};
-      res.render('pages/db', results );
+      res.send (results );
       client.release();
     } catch (err) {
-      console.log ("uh oh");
       console.error(err);
       res.send("Error " + err);
     }
   })
+  .get('/test', (req, res) => res.send ('test'))
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 const wss = new SocketServer({ server, clientTracking: true });
