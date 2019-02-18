@@ -41,8 +41,7 @@ function authenticateCode (code, client, done) {
     done();
     if(err) return console.error(err);
     for (let i = 0; i < result.rows.length; i++) {
-      let spotCode = result.rows [i].code;
-      console.log(spotCode);
+      let spotCode = String (result.rows [i].code);
       validCodes.push (spotCode);
     }
   });
