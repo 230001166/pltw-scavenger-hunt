@@ -18,7 +18,7 @@ const INDEX = path.join(__dirname, "index.html");
 const server = express()
   .use((req, res) => res.sendFile(INDEX) )
   .get('/', (req, res) => res.render('pages/index'))
-  .get('/db', async (req, res) => {
+  .get('/db', (req, res) => {
     pool.connect(function (err, client, done) {
       client.query('SELECT * FROM spot_table', function(err, result) {
         done();
