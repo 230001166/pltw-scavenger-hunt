@@ -47,10 +47,10 @@ function authenticateCode (code, client, done) {
   });
   let codeIsValid = false;
   for (let i = 0; i < validCodes.length; i++) {
+    console.log (validCodes [i]);
     if (validCodes [i] == code) {
       codeIsValid = true;
       console.log (code + " was valid.");
-      return;
     }
   }
   if (!codeIsValid) { console.log ("code not valid."); }
