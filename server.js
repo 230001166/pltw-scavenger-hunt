@@ -41,14 +41,14 @@ function authenticateCode (code, client, done) {
     done();
     if(err) return console.error(err);
     for (let i = 0; i < result.rows.length; i++) {
-      let spotCode = result.rows [0].code;
+      let spotCode = result.rows [i].code;
       console.log(spotCode);
       validCodes.push (spotCode);
     }
   });
   let codeIsValid = false;
   for (let i = 0; i < validCodes.length; i++) {
-    if (validCodes [i] === code) {
+    if (validCodes [i] == code) {
       codeIsValid = true;
       console.log (code + " was valid.");
       return;
