@@ -28,7 +28,6 @@ pool.connect(function (err, client, done) {
     if(err) return console.error(err);
     console.log (result.rows);
   });
-  authenticateCode ("qdaddysbbq", client, done);
 });
 
 function authenticateCode (code, client, done) {
@@ -43,8 +42,8 @@ function authenticateCode (code, client, done) {
         console.log (code + " was valid.");
       }
     }
+    if (!codeIsValid) { console.log ("code not valid."); }
   });
-  if (!codeIsValid) { console.log ("code not valid."); }
 }
 
 wss.on("connection", function connection(ws, req) {
