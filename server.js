@@ -23,12 +23,11 @@ const server = express()
 const wss = new SocketServer({ server, clientTracking: true });
 
 pool.connect(function (err, client, done) {
-  console.log(err+"!");
   client.query('SELECT name FROM spot_table', function(err, result) {
     done();
     if(err) return console.error(err);
+    console.log (result.rows);
   });
-  authenticateCode ("legos", client, done);
   authenticateCode ("qdaddysbbq", client, done);
 });
 
@@ -39,7 +38,6 @@ function authenticateCode (code, client, done) {
     if(err) return console.error(err);
     for (let i = 0; i < result.rows.length; i++) {
       let spotCode = String (result.rows [i].code);
-      console.log (spotCode);
       if (spotCode == code) {
         codeIsValid = true;
         console.log (code + " was valid.");
