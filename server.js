@@ -34,7 +34,7 @@ const server = express()
 
 const wss = new SocketServer({ server, clientTracking: true });
 
-pool.connect(databaseURL, function(err, client, done) {
+pool.connect(function (err, client, done) {
   console.log(err+"!");
  client.query('SELECT * FROM spot_table', function(err, result) {
    done();
