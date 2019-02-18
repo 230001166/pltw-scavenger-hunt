@@ -18,20 +18,18 @@ const INDEX = path.join(__dirname, "index.html");
 const server = express()
   .use((req, res) => res.sendFile(INDEX) )
   .get('/', (req, res) => res.render('pages/index'))
-  .get('/db', (req, res) => {
-    pool.connect(function (err, client, done) {
-      client.query('SELECT * FROM spot_table', function(err, result) {
-        done();
-        if(err) return console.error(err);
-        console.log(result.rows);
-      });
-     });
-  })
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 const wss = new SocketServer({ server, clientTracking: true });
 
-
+pool.connect(function (err, client, done) {
+  console.log(err+"!");
+ client.query('SELECT * FROM spot_table', function(err, result) {
+   done();
+   if(err) return console.error(err);
+   console.log(result.rows);
+ });
+});
 
 wss.on("connection", function connection(ws, req) {
 });
