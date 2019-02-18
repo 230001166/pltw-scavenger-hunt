@@ -33,7 +33,9 @@ const server = express()
 
 const wss = new SocketServer({ server, clientTracking: true });
 
-pool.connect(process.env.DATABASE_URL, function(err, client, done) {
+const databaseURL = "postgres://ygtyyztixuudtg:340b1f0f67757392f02c164d941abd57cdca4321f06da7df8a5741837976e335@ec2-54-225-227-125.compute-1.amazonaws.com:5432/d4trt296637p42";
+
+pool.connect(databaseURL, function(err, client, done) {
   console.log(err+"!");
  client.query('SELECT * FROM spot_table', function(err, result) {
    done();
