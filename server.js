@@ -29,10 +29,18 @@ const server = express()
       res.send("Error " + err);
     }
   })
-  .get('/test', (req, res) => res.send ('test'))
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 const wss = new SocketServer({ server, clientTracking: true });
+
+pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+  console.log(err+"!");
+ client.query('SELECT * FROM spot_table', function(err, result) {
+   done();
+   if(err) return console.error(err);
+   console.log(result.rows);
+ });
+});
 
 wss.on("connection", function connection(ws, req) {
 });
