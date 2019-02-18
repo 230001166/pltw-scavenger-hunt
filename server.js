@@ -42,9 +42,8 @@ function authenticateCode (code, client, done) {
       validCodes.push (spotCode);
     }
   });
-  let codeIsValid = false;
+  let codeIsValid = false; console.log (validCodes);
   for (let i = 0; i < validCodes.length; i++) {
-    console.log (validCodes);
     if (validCodes [i] == code) {
       codeIsValid = true;
       console.log (code + " was valid.");
