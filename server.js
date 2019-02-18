@@ -33,22 +33,19 @@ pool.connect(function (err, client, done) {
 });
 
 function authenticateCode (code, client, done) {
-  let validCodes = [];
+  let codeIsValid = false;
   client.query('SELECT code FROM spot_table', function(err, result) {
     done();
     if(err) return console.error(err);
     for (let i = 0; i < result.rows.length; i++) {
       let spotCode = String (result.rows [i].code);
-      validCodes.push (spotCode);
+      console.log (spotCode);
+      if (spotCode == code) {
+        codeIsValid = true;
+        console.log (code + " was valid.");
+      }
     }
   });
-  let codeIsValid = false; console.log (validCodes);
-  for (let i = 0; i < validCodes.length; i++) {
-    if (validCodes [i] == code) {
-      codeIsValid = true;
-      console.log (code + " was valid.");
-    }
-  }
   if (!codeIsValid) { console.log ("code not valid."); }
 }
 
