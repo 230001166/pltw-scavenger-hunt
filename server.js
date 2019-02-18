@@ -24,14 +24,38 @@ const wss = new SocketServer({ server, clientTracking: true });
 
 pool.connect(function (err, client, done) {
   console.log(err+"!");
- client.query('SELECT name FROM spot_table', function(err, result) {
-   done();
-   if(err) return console.error(err);
-   let test = result.rows [0];
-   console.log(result.rows);
-   console.log(test.name);
- });
+  client.query('SELECT name FROM spot_table', function(err, result) {
+    done();
+    if(err) return console.error(err);
+    let test = result.rows [0];
+    console.log(result.rows);
+    console.log(test.name);
+  });
+  authenticateCode ("legos");
+  authenticateCode ("qdaddysbbq");
 });
+
+function authenticateCode (code) {
+  let validCodes = [];
+  client.query('SELECT code FROM spot_table', function(err, result) {
+    done();
+    if(err) return console.error(err);
+    for (let i = 0; i < result.rows.length; i++) {
+      let spotCode = result.rows [0].code;
+      console.log(spotCode);
+      validCodes.push (spotCode);
+    }
+  });
+  let codeIsValid = false;
+  for (let i = 0; i < validCodes.length; i++) {
+    if (validCodes [i] === code) {
+      codeIsValid = true;
+      console.log (code + " was valid.");
+      return;
+    }
+  }
+  if (!codeIsValid) { console.log ("code not valid."); }
+}
 
 wss.on("connection", function connection(ws, req) {
 });
