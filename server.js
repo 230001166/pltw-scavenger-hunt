@@ -24,7 +24,7 @@ const wss = new SocketServer({ server, clientTracking: true });
 
 pool.connect(function (err, client, done) {
   console.log(err+"!");
- client.query('SELECT * FROM spot_table', function(err, result) {
+ client.query('SELECT * FROM spot_table.name', function(err, result) {
    done();
    if(err) return console.error(err);
    console.log(result.rows);
