@@ -29,7 +29,7 @@ pool.connect(function (err, client, done) {
    if(err) return console.error(err);
    let test = result.rows [0];
    console.log(result.rows);
-   console.log(test);
+   console.log(test.name);
  });
 });
 
