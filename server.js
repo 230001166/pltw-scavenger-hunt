@@ -31,11 +31,11 @@ pool.connect(function (err, client, done) {
     console.log(result.rows);
     console.log(test.name);
   });
-  authenticateCode ("legos");
-  authenticateCode ("qdaddysbbq");
+  authenticateCode ("legos", client);
+  authenticateCode ("qdaddysbbq", client);
 });
 
-function authenticateCode (code) {
+function authenticateCode (code, client) {
   let validCodes = [];
   client.query('SELECT code FROM spot_table', function(err, result) {
     done();
