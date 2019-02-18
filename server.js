@@ -27,7 +27,9 @@ pool.connect(function (err, client, done) {
  client.query('SELECT name FROM spot_table', function(err, result) {
    done();
    if(err) return console.error(err);
+   let test = result.rows [0];
    console.log(result.rows);
+   console.log(test);
  });
 });
 
