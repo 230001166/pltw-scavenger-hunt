@@ -33,7 +33,7 @@ const server = express()
 
 const wss = new SocketServer({ server, clientTracking: true });
 
-pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+pool.connect(process.env.DATABASE_URL, function(err, client, done) {
   console.log(err+"!");
  client.query('SELECT * FROM spot_table', function(err, result) {
    done();
