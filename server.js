@@ -27,9 +27,6 @@ pool.connect(function (err, client, done) {
   client.query('SELECT name FROM spot_table', function(err, result) {
     done();
     if(err) return console.error(err);
-    let test = result.rows [0];
-    console.log(result.rows);
-    console.log(test.name);
   });
   authenticateCode ("legos", client, done);
   authenticateCode ("qdaddysbbq", client, done);
@@ -47,7 +44,7 @@ function authenticateCode (code, client, done) {
   });
   let codeIsValid = false;
   for (let i = 0; i < validCodes.length; i++) {
-    console.log (validCodes [i]);
+    console.log (validCodes);
     if (validCodes [i] == code) {
       codeIsValid = true;
       console.log (code + " was valid.");
