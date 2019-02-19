@@ -38,7 +38,7 @@ function authenticateCode (code, client, done) {
     done();
     if(err) return console.error(err);
     for (let i = 0; i < result.rows.length; i++) {
-      let spotCode = String (result.rows [i].code);
+      //let spotCode = String (result.rows [i].code);
       if (spotCode == code) {
         codeIsValid = true;
         console.log (code + " was valid.");
