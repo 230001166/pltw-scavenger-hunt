@@ -23,6 +23,7 @@ const server = express()
 const wss = new SocketServer({ server, clientTracking: true });
 
 pool.connect(function (err, client, done) {
+  if (err) return console.error (err);
   client.query('SELECT name FROM spot_table', function(err, result) {
     done();
     if(err) return console.error(err);
