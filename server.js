@@ -28,6 +28,7 @@ pool.connect(function (err, client, done) {
     if(err) return console.error(err);
     console.log (result.rows);
   });
+  authenticateCode ("legos", client, done);
   authenticateCode ("qdaddysbbq", client, done);
 });
 
