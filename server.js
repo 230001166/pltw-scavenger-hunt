@@ -28,7 +28,7 @@ pool.connect(function (err, client, done) {
     if(err) return console.error(err);
     console.log (result.rows);
   });
-  authenticateCode ("qdaddysbbq");
+  authenticateCode ("qdaddysbbq", client, done);
 });
 
 function authenticateCode (code, client, done) {
