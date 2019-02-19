@@ -29,9 +29,16 @@ pool.connect(function (err, client, done) {
     if(err) return console.error(err);
     console.log (result.rows);
   });
+  client.query('INSERT INTO spot_table VALUES (3, "The Shop", "Jefferey", "Jefferey", "jefferey.txt","jeffman360")', function(err, result) {
+    done();
+    if(err) return console.error(err);
+    console.log (result.rows);
+  });
   authenticateCode ("legos", client, done);
   authenticateCode ("qdaddysbbq", client, done);
 });
+
+
 
 function authenticateCode (code, client, done) {
   let codeIsValid = false;
