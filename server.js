@@ -45,8 +45,9 @@ function authenticateCode (code, client, done) {
         }
       }
       if (!codeIsValid) { console.log ("code not valid."); }
-    } catch {
-      if(err) return console.error(err);
+    } 
+    catch (err) {
+      return console.error(err);
     }
   });
 }
