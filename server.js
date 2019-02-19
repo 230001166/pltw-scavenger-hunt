@@ -37,7 +37,7 @@ function authenticateCode (code, client, done) {
   let codeIsValid = false;
   client.query('SELECT code FROM spot_table', function(err, result) {
     done();
-    try {
+    if (err) return console.error (err);
       for (let i = 0; i < result.rows.length; i++) {
         let spotCode = result.rows [i].code;
         if (spotCode == code) {
@@ -46,10 +46,6 @@ function authenticateCode (code, client, done) {
         }
       }
       if (!codeIsValid) { console.log ("code not valid."); }
-    } 
-    catch (err) {
-      return console.error(err);
-    }
   });
 }
 
