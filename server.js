@@ -32,8 +32,8 @@ pool.connect(function (err, client, done) {
   authenticateCode ("legos", client, done);
   authenticateCode ("qdaddysbbq", client, done);
 
-  attemptToCreateUser ("test", "test", 2, client, done);
-  attemptToCreateUser ("jwu42", "imamonkey", 2, client, done);
+  attemptToCreateUser ("test", "test", 3, client, done);
+  attemptToCreateUser ("jwu42", "imamonkey", 4, client, done);
 });
 
 
