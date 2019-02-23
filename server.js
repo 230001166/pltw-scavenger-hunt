@@ -31,6 +31,9 @@ pool.connect(function (err, client, done) {
   });
   authenticateCode ("legos", client, done);
   authenticateCode ("qdaddysbbq", client, done);
+
+  attemptToCreateUser ("test", "test", client, done);
+  attemptToCreateUser ("jwu42", "imamonkey", client, done);
 });
 
 
@@ -52,6 +55,55 @@ function authenticateCode (code, client, done) {
     });
 
   });
+}
+
+function attemptToCreateUser (username, password, client,done) {
+  if (!usernameIsTaken (username, client, done)) {
+    let newUserID = getAmountOfExistingUsers (client, done) + 1;
+    pool.connect(function (err, client, done) {
+      const text = 'INSERT INTO users(id, username, password, visitedspots) VALUES($1, $2, $3, $4)';
+      const values = [newUserID, username, password, ' '];
+
+      client.query(text, values, function(err, result) {
+        done();
+        if (err) return console.error (err);
+        console.log ("User " + username + " created!");
+      });
+  
+    });  
+  }
+}
+
+function usernameIsTaken (username, client, done) {
+  pool.connect(function (err, client, done) {
+    client.query('SELECT username FROM users', function(err, result) {
+      done();
+      if (err) return console.error (err);
+        for (let i = 0; i < result.rows.length; i++) {
+          let name = result.rows [i].name;
+          if (username == name) {
+
+            console.log (username + " is taken!");
+            return true;
+          }
+        }
+        console.log ("Username is available!"); return false;
+    });
+
+  });
+}
+
+function getAmountOfExistingUsers (client, done) {
+  pool.connect(function (err, client, done) {
+    client.query('SELECT * FROM users', function(err, result) {
+      done();
+      if (err) return console.error (err);
+        let amountOfUsers = results.rows.length;
+        return amountOfUsers;
+    });
+
+  });
+
 }
 
 wss.on("connection", function connection(ws, req) {
