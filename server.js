@@ -32,8 +32,8 @@ pool.connect(function (err, client, done) {
   authenticateCode ("legos", client, done);
   authenticateCode ("qdaddysbbq", client, done);
 
-  attemptToCreateUser ("test", "test", client, done);
-  attemptToCreateUser ("jwu42", "imamonkey", client, done);
+  attemptToCreateUser ("test", "test", 2, client, done);
+  attemptToCreateUser ("jwu42", "imamonkey", 2, client, done);
 });
 
 
@@ -57,12 +57,11 @@ function authenticateCode (code, client, done) {
   });
 }
 
-function attemptToCreateUser (username, password, client,done) {
+function attemptToCreateUser (username, password, id, client,done) {
   if (!usernameIsTaken (username, client, done)) {
-    let newUserID = getAmountOfExistingUsers (client, done); console.log (newUserID);
     pool.connect(function (err, client, done) {
       const text = 'INSERT INTO users(id, username, password, visitedspots) VALUES($1, $2, $3, $4)';
-      const values = [newUserID, username, password, ' '];
+      const values = [id, username, password, ' '];
 
       client.query(text, values, function(err, result) {
         done();
