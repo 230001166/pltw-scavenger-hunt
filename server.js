@@ -98,7 +98,7 @@ function getAmountOfExistingUsers (client, done) {
     client.query('SELECT * FROM users', function(err, result) {
       done();
       if (err) return console.error (err);
-        let amountOfUsers = results.rows.length;
+        let amountOfUsers = result.rows.length;
         return amountOfUsers;
     });
 
