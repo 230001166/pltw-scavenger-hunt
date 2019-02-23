@@ -99,6 +99,7 @@ function getAmountOfExistingUsers (client, done) {
       done();
       if (err) return console.error (err);
         let amountOfUsers = result.rows.length;
+        console.log (amountOfUsers + " users exist.");
         return amountOfUsers;
     });
 
