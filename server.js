@@ -59,7 +59,7 @@ function authenticateCode (code, client, done) {
 
 function attemptToCreateUser (username, password, client,done) {
   if (!usernameIsTaken (username, client, done)) {
-    let newUserID = getAmountOfExistingUsers (client, done) + 1; console.log (newUserID);
+    let newUserID = parseInt (getAmountOfExistingUsers (client, done)) + 1; console.log (newUserID);
     pool.connect(function (err, client, done) {
       const text = 'INSERT INTO users(id, username, password, visitedspots) VALUES($1, $2, $3, $4)';
       const values = [newUserID, username, password, ' '];
