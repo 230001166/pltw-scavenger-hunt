@@ -58,7 +58,7 @@ function authenticateCode (code, client, done) {
 }
 
 function attemptToCreateUser (username, password, id, client,done) {
-  if (!usernameIsTaken (username, client, done)) {
+  if (usernameIsTaken (username, client, done) === false) {
     pool.connect(function (err, client, done) {
       const text = 'INSERT INTO users(id, username, password, visitedspots) VALUES($1, $2, $3, $4)';
       const values = [id, username, password, ' '];
