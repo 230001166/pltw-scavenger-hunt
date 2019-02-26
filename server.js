@@ -32,7 +32,7 @@ pool.connect(function (err, client, done) {
   authenticateCode ("legos", client, done);
   authenticateCode ("qdaddysbbq", client, done);
 
-  attemptToCreateUser ("test", "test", 3, client, done);
+  attemptToCreateUser ("test2", "test", 3, client, done);
   attemptToCreateUser ("jwu42", "imamonkey", 4, client, done);
 });
 
@@ -79,7 +79,7 @@ function usernameIsTaken (username, client, done) {
       done();
       if (err) return console.error (err);
         for (let i = 0; i < result.rows.length; i++) {
-          let name = result.rows [i].name;
+          let name = result.rows [i].username;
           if (username == name) {
 
             console.log (username + " is taken!");
