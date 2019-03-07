@@ -127,3 +127,8 @@ setInterval(() => {
     client.send(JSON.stringify(date));
   });
 }, 1000);
+
+ws.onmessage = function(event) {
+  let message = JSON.parse(event.data);
+  console.log("Code " + message.code + " inputted");
+};

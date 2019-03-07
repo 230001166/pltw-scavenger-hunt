@@ -22,7 +22,7 @@
 	<p id = "wildlife-info">Test test</p>
 </div>
 <div id = "bottom-bar">
-	<button id = "upload-qr-code">Upload code</button>
+	<button id = "upload-qr-code" onclick = "inputCode()">Upload code</button>
 	<button id = "see-scanned-codes">See scanned codes</button>
 </div>
 <script>
@@ -35,6 +35,16 @@
 		el.innerHTML = message.text;
 	};
 
+	function inputCode () {
+		var code = prompt ("Please enter a code.","your code here");
+
+		if (code != "" && code != null) {
+			let message = {
+				code: code,
+			};
+			ws.send(JSON.stringify(message));
+		}
+	}
   </script>
 </body>
 
@@ -94,11 +104,13 @@
 	position: absolute;
 	left: 5%;
 	width: 10%;
+	text-align: center;
 }
 #see-scanned-codes {
 	position: absolute;
 	right: 5%;
 	width: 10%;
+	text-align: center;
 }
 h1 {
 	font-family: arial;
