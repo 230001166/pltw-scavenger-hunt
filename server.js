@@ -61,6 +61,8 @@ function attemptToCreateUser(username, password, id, client, done) {
   if (idIsInvalid(id, client, done)) {
     console.log("[!] - Invalid ID for username");
     return;
+  } else {
+    console.log ("ID is not taken!");
   }
   if (usernameIsTaken(username, client, done) === false) {
     pool.connect(function(err, client, done) {
