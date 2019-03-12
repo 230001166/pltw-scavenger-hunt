@@ -57,6 +57,27 @@ function authenticateCode(code, client, done) {
   });
 }
 
+function authenticateUserInfo (username, password, client, done) {
+  let userInfoIsValid = false;
+  pool.connect(function(err, client, done) {
+    client.query("SELECT username, password FROM users", function(err, result) {
+      done();
+      if (err) return console.error(err);
+      for (let i = 0; i < result.rows.length; i++) {
+        let retrievedUsername = result.rows[i].username;
+        let retrievedPassword = result.rows[i].password;
+        if (username === retrievedUsername && password === retrievedPassword) {
+          userInfoIsValid = true;
+          console.log(username + " was valid.");
+        }
+      }
+      if (!userInfoIsValid) {
+        console.log("user info not valid.");
+      }
+    });
+  });
+}
+
 function attemptToCreateUser(username, password, id, client, done) {
   if (idIsInvalid(id, client, done)) {
     console.log("[!] - Invalid ID for username");
@@ -122,12 +143,23 @@ function getAmountOfExistingUsers(client, done) {
 wss.on("connection", function connection(ws, req) {
   ws.onmessage = function(event) {
     let message = JSON.parse(event.data);
-    console.log("Code " + message.code + " inputted");
 
-    pool.connect(function(err, client, done) {
-      if (err) return console.error(err);
-      authenticateCode(message.code, client, done);
-    });
+    if (message.type === "code") {
+      console.log("Code " + message.code + " inputted");
+
+      pool.connect(function(err, client, done) {
+        if (err) return console.error(err);
+        authenticateCode(message.code, client, done);
+      });
+    }
+    if (message.type === "userinfo") {
+      console.log("Username " + message.username + " and password " + message.password + " inputted");
+
+      pool.connect(function(err, client, done) {
+        if (err) return console.error(err);
+        authenticateUserInfo(message.username, message.password, client, done);
+      });
+    }
   };
 });
 

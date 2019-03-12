@@ -10,7 +10,7 @@
 
 	<div id = "user-info">
 		<p id = "hello-user">Hello, JWu42!</p>
-		<p id = "sign-out">Sign Out</p>
+		<button id = "sign-in" onclick = "inputUserInfo()">Sign In</button>
 	</div>
 </head>
 
@@ -41,6 +41,21 @@
 		if (code != "" && code != null) {
 			let message = {
 				code: code,
+				type: "code",
+			};
+			ws.send(JSON.stringify(message));
+		}
+	}
+
+	function inputUserInfo () {
+		var username = prompt ("Please enter your username."," ");
+		var password = prompt ("Please enter your password."," ");
+
+		if (username != "" && username != null && password != "" && password != null) {
+			let message = {
+				username: username,
+				password: password,
+				type: "userinfo",
 			};
 			ws.send(JSON.stringify(message));
 		}
@@ -71,11 +86,12 @@
 	top: 10%;
 	left: 15%;
 }
-#sign-out {
+#sign-in {
 	position: absolute;
 	top: 10%;
 	right: 10%;
 	font-family: arial;
+	visibility: visible;
 }
 #wildlife-information {
 	position: absolute;
