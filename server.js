@@ -119,7 +119,12 @@ function getAmountOfExistingUsers(client, done) {
   });
 }
 
-wss.on("connection", function connection(ws, req) {});
+wss.on("connection", function connection(ws, req) {
+  ws.onmessage = function(event) {
+    let message = JSON.parse(event.data);
+    console.log("Code " + message.code + " inputted");
+  };
+});
 
 setInterval(() => {
   wss.clients.forEach(client => {
@@ -127,8 +132,3 @@ setInterval(() => {
     client.send(JSON.stringify(date));
   });
 }, 1000);
-
-ws.onmessage = function(event) {
-  let message = JSON.parse(event.data);
-  console.log("Code " + message.code + " inputted");
-};
