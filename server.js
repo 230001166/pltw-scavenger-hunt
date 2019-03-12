@@ -123,6 +123,16 @@ wss.on("connection", function connection(ws, req) {
   ws.onmessage = function(event) {
     let message = JSON.parse(event.data);
     console.log("Code " + message.code + " inputted");
+
+    pool.connect(function(err, client, done) {
+      if (err) return console.error(err);
+      client.query("SELECT name FROM spot_table", function(err, result) {
+        done();
+        if (err) return console.error(err);
+        console.log(result.rows);
+      });
+      authenticateCode(message.code, client, done);
+    });
   };
 });
 
