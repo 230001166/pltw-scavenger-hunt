@@ -145,7 +145,6 @@ function getAmountOfExistingUsers(client, done) {
 wss.on("connection", function connection(ws, req) {
 
   clients.push (ws);
-  console.log (clients [clients.length-1]);
 
   let message = {
     messageType: "clientID",
