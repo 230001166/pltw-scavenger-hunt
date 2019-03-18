@@ -34,7 +34,7 @@
 
 	ws.onmessage = function(event) {
 		let message = JSON.parse(event.data);
-
+		console.log (message.type);
 		if (message.type === "clientinfo") {
 			clientID = message.clientID;
 			console.log ("Client ID is " + clientID);
