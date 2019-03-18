@@ -147,11 +147,10 @@ wss.on("connection", function connection(ws, req) {
   clients.push (ws);
 
   let message = {
-    messageType: "clientID",
+    type: "clientinfo",
     clientID: clients.length-1
   };
 
-  console.log ("created new client " + message.clientID);
   ws.send(JSON.stringify(message));
 
   ws.onmessage = function(event) {
@@ -179,7 +178,7 @@ wss.on("connection", function connection(ws, req) {
 setInterval(() => {
   wss.clients.forEach(client => {
     let date = { 
-      messageType: "date",
+      type: "date",
       text: new Date().toTimeString() };
     client.send(JSON.stringify(date));
   });
