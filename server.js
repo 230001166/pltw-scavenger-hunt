@@ -150,6 +150,8 @@ wss.on("connection", function connection(ws, req) {
     messageType: "clientID",
     clientID: clients.length-1
   };
+
+  console.log ("created new client " + clientID);
   ws.send(JSON.stringify(message));
 
   ws.onmessage = function(event) {
