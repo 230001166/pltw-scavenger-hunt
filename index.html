@@ -9,8 +9,9 @@
 	</div>
 
 	<div id = "user-info">
-		<p id = "hello-user">Hello, JWu42!</p>
+		<p id = "hello-user"></p>
 		<button id = "sign-in" onclick = "inputUserInfo()">Sign In</button>
+		<button id = "sign-out" onclick = "signOutUser()">Sign Out</button>
 	</div>
 </head>
 
@@ -29,10 +30,17 @@
 	var HOST = location.origin.replace(/^http/, "ws");
 	var ws = new WebSocket(HOST);
 	var el = document.getElementById("wildlife-info");
+	let clientID = 0;
 
 	ws.onmessage = function(event) {
 		let message = JSON.parse(event.data);
-		el.innerHTML = message.text;
+
+		if (message.messageType == "date") {
+			el.innerHTML = message.text;
+		} else if (message.messageType == "clientID") {
+			clientID = message.clientID;
+			console.log ("Client ID is " + clientID);
+		}
 	};
 
 	function inputCode () {

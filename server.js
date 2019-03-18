@@ -23,6 +23,8 @@ const server = express()
 
 const wss = new SocketServer({ server, clientTracking: true });
 
+let clients = [];
+
 pool.connect(function(err, client, done) {
   if (err) return console.error(err);
   client.query("SELECT name FROM spot_table", function(err, result) {
@@ -141,6 +143,16 @@ function getAmountOfExistingUsers(client, done) {
 }
 
 wss.on("connection", function connection(ws, req) {
+
+  clients.push (ws);
+  console.log (clients [clients.length-1]);
+
+  let message = {
+    messageType: "clientID",
+    clientID: clients.length-1
+  };
+  client.send(JSON.stringify(message));
+
   ws.onmessage = function(event) {
     let message = JSON.parse(event.data);
 
@@ -165,7 +177,9 @@ wss.on("connection", function connection(ws, req) {
 
 setInterval(() => {
   wss.clients.forEach(client => {
-    let date = { text: new Date().toTimeString() };
+    let date = { 
+      messageType: "date",
+      text: new Date().toTimeString() };
     client.send(JSON.stringify(date));
   });
 }, 1000);
