@@ -53,7 +53,7 @@ function authenticateCode(code, client, done) {
   });
 }
 
-function userInfoIsValid (data, client, done) {
+function authenticateUserInfo (data, client, done) {
   pool.connect(function(err, client, done) {
     client.query("SELECT username, password FROM users", function(err, result) {
       done();
@@ -63,6 +63,7 @@ function userInfoIsValid (data, client, done) {
         let retrievedPassword = result.rows[i].password;
         if (data.username === retrievedUsername && data.password === retrievedPassword) {
           console.log(data.username + " was valid.");
+          data.isValid = true;
         }
       }
     });
@@ -157,14 +158,22 @@ wss.on("connection", function connection(ws, req) {
     if (message.type === "userinfo") {
       console.log("Username " + message.username + " and password " + message.password + " inputted from client " + message.clientID);
 
-      console.log ("Sending user info...");
-      let userMessage = {
-        type: "userinfo",
-        username: message.username,
-      };
-      
-      console.log (userMessage.username);
-      wss.clients [message.clientID].send(JSON.stringify(userMessage));  
+      pool.connect(function(err, client, done) {
+        if (err) return console.error(err);
+        authenticateUserInfo (message, client, done);
+      });
+
+      if (message.isValid) {
+        console.log ("Sending user info...");
+        let userMessage = {
+          type: "userinfo",
+          username: message.username,
+        };
+        
+        console.log (userMessage.username);
+        wss.clients [message.clientID].send(JSON.stringify(userMessage)); 
+      } 
+ 
     }
   };
 });
