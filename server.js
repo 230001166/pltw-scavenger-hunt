@@ -67,9 +67,6 @@ function userInfoIsValid (data, client, done) {
           userInfoIsValid = true;
         }
       }
-      if (!userInfoIsValid) {
-        console.log("user info not valid.");
-      }
     });
   });
   return userInfoIsValid;
