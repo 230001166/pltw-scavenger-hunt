@@ -31,6 +31,7 @@
 	var HOST = location.origin.replace(/^http/, "ws");
 	var ws = new WebSocket(HOST);
 	let el = document.getElementById("time");
+	let userInfo = document.getElementById ("hello-user");
 	let clientID = 0;
 
 	ws.onmessage = function(event) {
@@ -41,8 +42,7 @@
 			console.log ("Client ID is " + clientID);
 		} else if (message.type === "date") {
 			el.innerHTML = message.text;
-		} else if (message.type === "userinfo") {
-			let userInfo = document.getElementById ("hello-user");
+		} else if (message.type === "userinfo") { el.innerHTML = "THE MESSAGE KINDA WORKS";
 			userInfo.innerHTML = "Hello, " + message.username + "!";
 		}
 	};
