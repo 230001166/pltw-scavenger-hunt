@@ -54,7 +54,6 @@ function authenticateCode(code, client, done) {
 }
 
 function userInfoIsValid (data, client, done) {
-  let userInputIsValid;
   pool.connect(function(err, client, done) {
     client.query("SELECT username, password FROM users", function(err, result) {
       done();
@@ -64,16 +63,11 @@ function userInfoIsValid (data, client, done) {
         let retrievedPassword = result.rows[i].password;
         if (data.username === retrievedUsername && data.password === retrievedPassword) {
           console.log(data.username + " was valid.");
-          userInputIsValid = true;
         }
-      }
-      if (userInputIsValid !== true) {
-        userInputIsValid = false;
       }
     });
     
   });
-  return userInputIsValid;
 }
 
 function attemptToCreateUser(username, password, id, client, done) {
@@ -163,22 +157,14 @@ wss.on("connection", function connection(ws, req) {
     if (message.type === "userinfo") {
       console.log("Username " + message.username + " and password " + message.password + " inputted from client " + message.clientID);
 
-      let inputWasValid = false;
-      pool.connect (function (err, client, done) {
-        if (err) return console.error(err);
-        inputWasValid = userInfoIsValid (message, client, done);
-        console.log (inputWasValid);
-      });
-      if (inputWasValid === true) {
-        console.log ("Sending user info...");
-        let userMessage = {
-          type: "userinfo",
-          username: message.username,
-        };
+      console.log ("Sending user info...");
+      let userMessage = {
+        type: "userinfo",
+        username: message.username,
+      };
       
-        console.log (userMessage.username);
-        wss.clients [message.clientID].send(JSON.stringify(userMessage));  
-      }
+      console.log (userMessage.username);
+      wss.clients [message.clientID].send(JSON.stringify(userMessage));  
     }
   };
 });
