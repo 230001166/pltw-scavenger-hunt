@@ -162,25 +162,15 @@ wss.on("connection", function connection(ws, req) {
     if (message.type === "userinfo") {
       console.log("Username " + message.username + " and password " + message.password + " inputted from client " + message.clientID);
 
-      let userMessage = {
-        type: "userinfo",
-        username: message.username,
-      };
-    
-      console.log (userMessage.username);
-      wss.clients [message.clientID].send(JSON.stringify(userMessage));  
-      pool.connect(function(err, client, done) {
-        if (err) return console.error(err);
-        if (userInfoIsValid (message, client, done) === true) {
-          let userMessage = {
-            type: "userinfo",
-            username: message.username,
-          };
-        
-          console.log (userMessage.username);
-          wss.clients [message.clientID].send(JSON.stringify(userMessage));  
-        }
-      });
+      if (userInfoIsValid (message, client, done) === true) {
+        let userMessage = {
+          type: "userinfo",
+          username: message.username,
+        };
+      
+        console.log (userMessage.username);
+        wss.clients [message.clientID].send(JSON.stringify(userMessage));  
+      }
     }
   };
 });
