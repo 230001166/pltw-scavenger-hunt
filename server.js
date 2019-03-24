@@ -53,7 +53,7 @@ function authenticateCode(code, client, done) {
   });
 }
 
-function authenticateUserInfo (username, password, client, done) {
+function userInfoIsValid (data, client, done) {
   let userInfoIsValid = false;
   pool.connect(function(err, client, done) {
     client.query("SELECT username, password FROM users", function(err, result) {
@@ -62,9 +62,9 @@ function authenticateUserInfo (username, password, client, done) {
       for (let i = 0; i < result.rows.length; i++) {
         let retrievedUsername = result.rows[i].username;
         let retrievedPassword = result.rows[i].password;
-        if (username === retrievedUsername && password === retrievedPassword) {
+        if (data.username === retrievedUsername && data.password === retrievedPassword) {
           userInfoIsValid = true;
-          console.log(username + " was valid.");
+          console.log(data.username + " was valid.");
         }
       }
       if (!userInfoIsValid) {
@@ -72,6 +72,8 @@ function authenticateUserInfo (username, password, client, done) {
       }
     });
   });
+
+  return userInfoIsValid;
 }
 
 function attemptToCreateUser(username, password, id, client, done) {
@@ -163,7 +165,14 @@ wss.on("connection", function connection(ws, req) {
 
       pool.connect(function(err, client, done) {
         if (err) return console.error(err);
-        authenticateUserInfo(message.username, message.password, client, done);
+        if (userInfoIsValid (message, client, done)) {
+          let userMessage = {
+            type: "userinfo",
+            username: message.username,
+          };
+        
+          ws.send(JSON.stringify(userMessage));  
+        }
       });
     }
   };
