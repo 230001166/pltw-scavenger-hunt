@@ -54,8 +54,8 @@ function authenticateCode(code, client, done) {
 }
 
 function userInfoIsValid (data, client, done) {
+  let userInputIsValid;
   pool.connect(function(err, client, done) {
-    let userInputIsValid = false;
     client.query("SELECT username, password FROM users", function(err, result) {
       done();
       if (err) return console.error(err);
@@ -67,9 +67,13 @@ function userInfoIsValid (data, client, done) {
           userInputIsValid = true;
         }
       }
+      if (userInputIsValid !== true) {
+        userInputIsValid = false;
+      }
     });
-    return userInputIsValid;
+    
   });
+  return userInputIsValid;
 }
 
 function attemptToCreateUser(username, password, id, client, done) {
