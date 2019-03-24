@@ -17,6 +17,7 @@
 
 <body>
 <p>Cool text</p>
+<p id = "time"></p>
 <div id = "wildlife-information">
 	<img id = "wildlife-picture" src = "carl.JPG"></img>
 	<p id = "wildlife-name">Test</p>
@@ -29,7 +30,7 @@
 <script>
 	var HOST = location.origin.replace(/^http/, "ws");
 	var ws = new WebSocket(HOST);
-	var el = document.getElementById("wildlife-info");
+	let el = document.getElementById("time");
 	let clientID = 0;
 
 	ws.onmessage = function(event) {
@@ -84,6 +85,11 @@
 	height: 10%;
 	background-color: beige;
 	text-align: center;
+}
+#time {
+	position: absolute;
+	top: 10%;
+	left: 5%;
 }
 #user-info {
 	position: absolute;

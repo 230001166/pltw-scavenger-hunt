@@ -165,7 +165,7 @@ wss.on("connection", function connection(ws, req) {
 
       pool.connect(function(err, client, done) {
         if (err) return console.error(err);
-        if (userInfoIsValid (message, client, done)) {
+        if (userInfoIsValid (message, client, done) === true) {
           let userMessage = {
             type: "userinfo",
             username: message.username,
