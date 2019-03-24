@@ -166,6 +166,7 @@ wss.on("connection", function connection(ws, req) {
       pool.connect (function (err, client, done) {
         if (err) return console.error(err);
         inputWasValid = userInfoIsValid (message, client, done);
+        console.log (inputWasValid);
       });
       if (inputWasValid === true) {
         console.log ("Sending user info...");
