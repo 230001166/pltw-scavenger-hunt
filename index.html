@@ -40,6 +40,8 @@
 			console.log ("Client ID is " + clientID);
 		} else if (message.type === "date") {
 			el.innerHTML = message.text;
+		} else {
+			console.log (message.type);
 		}
 	};
 

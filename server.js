@@ -26,12 +26,6 @@ const wss = new SocketServer({ server, clientTracking: true });
 let clients = [];
 
 pool.connect(function(err, client, done) {
-  if (err) return console.error(err);
-  client.query("SELECT name FROM spot_table", function(err, result) {
-    done();
-    if (err) return console.error(err);
-    console.log(result.rows);
-  });
   authenticateCode("legos", client, done);
   authenticateCode("qdaddysbbq", client, done);
 
