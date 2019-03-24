@@ -159,7 +159,7 @@ wss.on("connection", function connection(ws, req) {
       });
     }
     if (message.type === "userinfo") {
-      console.log("Username " + message.username + " and password " + message.password + " inputted");
+      console.log("Username " + message.username + " and password " + message.password + " inputted from client " + message.clientID);
 
       pool.connect(function(err, client, done) {
         if (err) return console.error(err);

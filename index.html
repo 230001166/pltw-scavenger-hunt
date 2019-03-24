@@ -65,6 +65,7 @@
 			let message = {
 				username: username,
 				password: password,
+				clientID: clientID,
 				type: "userinfo",
 			};
 			ws.send(JSON.stringify(message));
