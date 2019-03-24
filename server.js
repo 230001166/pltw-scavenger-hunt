@@ -54,7 +54,6 @@ function authenticateCode(code, client, done) {
 }
 
 function userInfoIsValid (data, client, done) {
-  let userInfoIsValid = false;
   pool.connect(function(err, client, done) {
     client.query("SELECT username, password FROM users", function(err, result) {
       done();
@@ -63,17 +62,17 @@ function userInfoIsValid (data, client, done) {
         let retrievedUsername = result.rows[i].username;
         let retrievedPassword = result.rows[i].password;
         if (data.username === retrievedUsername && data.password === retrievedPassword) {
-          userInfoIsValid = true;
           console.log(data.username + " was valid.");
+          return true;
         }
       }
       if (!userInfoIsValid) {
         console.log("user info not valid.");
+        return false;
       }
     });
   });
-
-  return userInfoIsValid;
+  return false;
 }
 
 function attemptToCreateUser(username, password, id, client, done) {
