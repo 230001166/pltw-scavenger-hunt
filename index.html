@@ -42,7 +42,7 @@
 			console.log ("Client ID is " + clientID);
 		} else if (message.type === "date") {
 			el.innerHTML = message.text;
-		} else if (message.type === "userinfo") { el.innerHTML = "THE MESSAGE KINDA WORKS";
+		} else if (message.type === "userinfo") {
 			userInfo.innerHTML = "Hello, " + message.username + "!";
 		}
 	};

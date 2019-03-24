@@ -171,7 +171,7 @@ wss.on("connection", function connection(ws, req) {
           };
         
           console.log (userMessage.username);
-          ws.send(JSON.stringify(userMessage));  
+          wss.clients [message.clientID].send(JSON.stringify(userMessage));  
         }
       });
     }
