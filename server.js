@@ -162,7 +162,11 @@ wss.on("connection", function connection(ws, req) {
     if (message.type === "userinfo") {
       console.log("Username " + message.username + " and password " + message.password + " inputted from client " + message.clientID);
 
-      if (userInfoIsValid (message, client, done) === true) {
+      let userInfoIsValid = false;
+      pool.connect (function (err, client, done) {
+        userInfoIsValid = userInfoIsValid (message, client, done);
+      });
+      if (userInfoIsValid === true) {
         let userMessage = {
           type: "userinfo",
           username: message.username,
