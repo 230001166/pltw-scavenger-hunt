@@ -63,7 +63,7 @@ function authenticateUserInfo (data, client, done) {
         let retrievedPassword = result.rows[i].password;
         if (data.username === retrievedUsername && data.password === retrievedPassword) {
           console.log(data.username + " was valid.");
-          data.isValid = true;
+          clients [data.clientID].username = data.username;
         }
       }
     });
@@ -163,11 +163,11 @@ wss.on("connection", function connection(ws, req) {
         authenticateUserInfo (message, client, done);
       });
 
-      if (message.isValid) {
+      if (clients [message.clientID].hasOwnProperty ("username")) {
         console.log ("Sending user info...");
         let userMessage = {
           type: "userinfo",
-          username: message.username,
+          username: clients [message.clientID].username,
         };
         
         console.log (userMessage.username);
