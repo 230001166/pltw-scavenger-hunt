@@ -69,7 +69,7 @@ function setClientUsername (wss, data, username) {
   console.log ("Sending user info...");
   let userMessage = {
     type: "userinfo",
-    username: clients [dataclientID].username,
+    username: clients [data.clientID].username,
   };
     
   console.log (userMessage.username);
