@@ -158,8 +158,8 @@ wss.on("connection", function connection(ws, req) {
       pool.connect(function(err, client, done) {
         if (err) return console.error(err);
         authenticateUserInfo (message, client, done);
-        console.log (clients [message.clientID].username);
       });
+      console.log (clients [message.clientID].username);
 
       if (clients [message.clientID].hasOwnProperty ("username")) {
         console.log ("Sending user info...");
