@@ -54,13 +54,17 @@ function authenticateUserInfo (data, client, done) {
         let retrievedUsername = result.rows[i].username;
         let retrievedPassword = result.rows[i].password;
         if (data.username === retrievedUsername && data.password === retrievedPassword) {
-          clients [data.clientID].username = retrievedUsername;
           console.log(data.username + " was valid.");
+          setClientUsername (data, retrievedUsername);
         }
       }
     });
     
   });
+}
+
+function setClientUsername (data, username) {
+  clients [data.clientID].username = username;
 }
 
 function attemptToCreateUser(username, password, id, client, done) {
