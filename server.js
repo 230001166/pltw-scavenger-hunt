@@ -76,16 +76,17 @@ function authenticateUserInfo (wss, data, client, done) {
 }
 
 function setClientUsername (wss, data, username) {
-  clients [data.clientID].username = username;
-  console.log (data + "\nUsername " + clients [data.clientID].username);
+  let clientID = returnIndexFromUniqueIdentifier (data.uniqueID);
+  clients [clientID].username = username;
+  console.log (data + "\nUsername " + clients [clientID].username);
   console.log ("Sending user info...");
   let userMessage = {
     type: "userinfo",
-    username: clients [data.clientID].username,
+    username: clients [clientID].username,
   };
     
   console.log (userMessage.username);
-  wss.clients [data.clientID].send(JSON.stringify(userMessage));  
+  wss.clients [clientID].send(JSON.stringify(userMessage));  
 }
 
 function disconnectClient (index) {
@@ -154,14 +155,43 @@ function getAmountOfExistingUsers(client, done) {
   });
 }
 
+function createUniqueIdentifier () {
+  let isUnique = false; let uniqueIdentifier = 0;
+  while (!isUnique) {
+    isUnique = true;
+    for (let i = 0; i < clients.length; i++) {
+      if (uniqueIdentifier == clients [i].uniqueIdentifier) {
+        isUnique = false;
+      }
+    }
+
+    if (!isUnique) {
+      uniqueIdentifier = Math.floor (Math.random () * 10000000)
+    }
+  }
+  return uniqueIdentifier;
+}
+
+function returnIndexFromUniqueIdentifier (uniqueIdentifier) {
+  let clientIndex = 0;
+  clients.forEach((client, index) => {
+    if (client.uniqueIdentifier == uniqueIdentifier) {
+      clientIndex = index;
+    }
+  });
+
+  return clientIndex;
+}
+
 wss.on("connection", function connection(ws, req) {
 
   ws.clientID = clients.length-1;
+  ws.uniqueIdentifier = createUniqueIdentifier ();
   clients.push (ws);
 
   let serverMessage = {
     type: "clientinfo",
-    clientID: clients.length-1
+    uniqueID: clients [clients.length-1].uniqueIdentifier
   };
 
   ws.send(JSON.stringify(serverMessage));
@@ -174,11 +204,11 @@ wss.on("connection", function connection(ws, req) {
 
       pool.connect(function(err, client, done) {
         if (err) return console.error(err);
-        authenticateCode(wss, message.code, message.clientID, client, done);
+        authenticateCode(wss, message.code, returnIndexFromUniqueIdentifier (message.uniqueID), client, done);
       });
     }
     if (message.type === "userinfo") {
-      console.log("Username " + message.username + " and password " + message.password + " inputted from client " + message.clientID);
+      console.log("Username " + message.username + " and password " + message.password + " inputted from client " + returnIndexFromUniqueIdentifier (message.uniqueID));
 
       pool.connect(function(err, client, done) {
         if (err) return console.error(err);
@@ -189,7 +219,7 @@ wss.on("connection", function connection(ws, req) {
   };
 
   ws.on ("close", () => {
-    disconnectClient (ws.clientID);
+    disconnectClient (returnIndexFromUniqueIdentifier (ws.uniqueIdentifier));
   });
 });
 
