@@ -54,8 +54,8 @@ function authenticateUserInfo (data, client, done) {
         let retrievedUsername = result.rows[i].username;
         let retrievedPassword = result.rows[i].password;
         if (data.username === retrievedUsername && data.password === retrievedPassword) {
+          clients [data.clientID].username = retrievedUsername;
           console.log(data.username + " was valid.");
-          clients [data.clientID].username = data.username;
         }
       }
     });
