@@ -44,6 +44,11 @@
 			el.innerHTML = message.text;
 		} else if (message.type === "userinfo") {
 			userInfo.innerHTML = "Hello, " + message.username + "!";
+		} else if (message.type === "spotinfo") {
+			let wildlifeName = document.getElementById ("wildlife-name");
+			let wildlifeInfo = document.getElementById ("wildlife-info");
+			wildlifeName.innerHTML = message.wildlifeName;
+			wildlifeInfo.innerHTML = message.wildlifeDescription;
 		}
 	};
 
@@ -53,6 +58,7 @@
 		if (code != "" && code != null) {
 			let message = {
 				code: code,
+				clientID: clientID,
 				type: "code",
 			};
 			ws.send(JSON.stringify(message));
@@ -68,11 +74,14 @@
 				username: username,
 				password: password,
 				clientID: clientID,
-				isValid: false,
 				type: "userinfo",
 			};
 			ws.send(JSON.stringify(message));
 		}
+	}
+
+	function signOutUser () {
+		userInfo.innerHTML = "";
 	}
   </script>
 </body>

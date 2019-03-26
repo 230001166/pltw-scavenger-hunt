@@ -25,10 +25,10 @@ const wss = new SocketServer({ server, clientTracking: true });
 
 let clients = [];
 
-function authenticateCode(code, client, done) {
+function authenticateCode(wss, code, clientID, client, done) {
   let codeIsValid = false;
   pool.connect(function(err, client, done) {
-    client.query("SELECT code FROM spot_table", function(err, result) {
+    client.query("SELECT * FROM spot_table", function(err, result) {
       done();
       if (err) return console.error(err);
       for (let i = 0; i < result.rows.length; i++) {
@@ -36,6 +36,7 @@ function authenticateCode(code, client, done) {
         if (spotCode == code) {
           codeIsValid = true;
           console.log(code + " was valid.");
+          sendSpotInformationToUser (wss, result.rows [i], clientID);
         }
       }
       if (!codeIsValid) {
@@ -43,6 +44,17 @@ function authenticateCode(code, client, done) {
       }
     });
   });
+}
+
+function sendSpotInformationToUser (wss, spot, clientID) {
+  let userMessage = {
+    type: "spotinfo",
+    wildlifeName: spot.wildlifename,
+    wildlifeDescription: spot.wildlifedescription,
+    username: clients [clientID].username,
+  };
+
+  wss.clients [clientID].send(JSON.stringify(userMessage));    
 }
 
 function authenticateUserInfo (wss, data, client, done) {
@@ -157,7 +169,7 @@ wss.on("connection", function connection(ws, req) {
 
       pool.connect(function(err, client, done) {
         if (err) return console.error(err);
-        authenticateCode(message.code, client, done);
+        authenticateCode(wss, message.code, message.clientID, client, done);
       });
     }
     if (message.type === "userinfo") {
