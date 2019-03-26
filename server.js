@@ -65,6 +65,7 @@ function authenticateUserInfo (data, client, done) {
 
 function setClientUsername (data, username) {
   clients [data.clientID].username = username;
+  console.log (data + "\nUsername " + clients [data.clientID].username);
 }
 
 function attemptToCreateUser(username, password, id, client, done) {
