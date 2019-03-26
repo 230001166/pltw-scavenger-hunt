@@ -69,11 +69,11 @@ function setClientUsername (wss, data, username) {
   console.log ("Sending user info...");
   let userMessage = {
     type: "userinfo",
-    username: clients [message.clientID].username,
+    username: clients [dataclientID].username,
   };
     
   console.log (userMessage.username);
-  wss.clients [message.clientID].send(JSON.stringify(userMessage));  
+  wss.clients [data.clientID].send(JSON.stringify(userMessage));  
 }
 
 function attemptToCreateUser(username, password, id, client, done) {
