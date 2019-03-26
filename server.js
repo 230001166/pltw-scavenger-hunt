@@ -45,7 +45,7 @@ function authenticateCode(code, client, done) {
   });
 }
 
-function authenticateUserInfo (data, client, done) {
+function authenticateUserInfo (wss, data, client, done) {
   pool.connect(function(err, client, done) {
     client.query("SELECT username, password FROM users", function(err, result) {
       done();
@@ -55,7 +55,7 @@ function authenticateUserInfo (data, client, done) {
         let retrievedPassword = result.rows[i].password;
         if (data.username === retrievedUsername && data.password === retrievedPassword) {
           console.log(data.username + " was valid.");
-          setClientUsername (data, retrievedUsername);
+          setClientUsername (wss, data, retrievedUsername);
         }
       }
     });
@@ -63,9 +63,17 @@ function authenticateUserInfo (data, client, done) {
   });
 }
 
-function setClientUsername (data, username) {
+function setClientUsername (wss, data, username) {
   clients [data.clientID].username = username;
   console.log (data + "\nUsername " + clients [data.clientID].username);
+  console.log ("Sending user info...");
+  let userMessage = {
+    type: "userinfo",
+    username: clients [message.clientID].username,
+  };
+    
+  console.log (userMessage.username);
+  wss.clients [message.clientID].send(JSON.stringify(userMessage));  
 }
 
 function attemptToCreateUser(username, password, id, client, done) {
@@ -157,20 +165,8 @@ wss.on("connection", function connection(ws, req) {
 
       pool.connect(function(err, client, done) {
         if (err) return console.error(err);
-        authenticateUserInfo (message, client, done);
+        authenticateUserInfo (wss, message, client, done);
       });
-      console.log (clients [message.clientID].username);
-
-      if (clients [message.clientID].hasOwnProperty ("username")) {
-        console.log ("Sending user info...");
-        let userMessage = {
-          type: "userinfo",
-          username: clients [message.clientID].username,
-        };
-        
-        console.log (userMessage.username);
-        wss.clients [message.clientID].send(JSON.stringify(userMessage)); 
-      } 
  
     }
   };
