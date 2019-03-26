@@ -88,6 +88,10 @@ function setClientUsername (wss, data, username) {
   wss.clients [data.clientID].send(JSON.stringify(userMessage));  
 }
 
+function disconnectClient (index) {
+  clients.splice (index, 1);
+}
+
 function attemptToCreateUser(username, password, id, client, done) {
   if (idIsInvalid(id, client, done)) {
     console.log("[!] - Invalid ID for username");
@@ -152,6 +156,7 @@ function getAmountOfExistingUsers(client, done) {
 
 wss.on("connection", function connection(ws, req) {
 
+  ws.clientID = clients.length-1;
   clients.push (ws);
 
   let serverMessage = {
@@ -182,6 +187,10 @@ wss.on("connection", function connection(ws, req) {
  
     }
   };
+
+  ws.on ("close", () => {
+    disconnectClient (ws.clientID);
+  });
 });
 
 setInterval(() => {
