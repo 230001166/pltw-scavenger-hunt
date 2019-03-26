@@ -82,6 +82,13 @@
 
 	function signOutUser () {
 		userInfo.innerHTML = "";
+		let message = {
+			username: "",
+			password: "",
+			uniqueID: uniqueID,
+			type: "userinfo",
+		};
+		ws.send(JSON.stringify(message));
 	}
   </script>
 </body>
