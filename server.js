@@ -25,14 +25,6 @@ const wss = new SocketServer({ server, clientTracking: true });
 
 let clients = [];
 
-pool.connect(function(err, client, done) {
-  authenticateCode("legos", client, done);
-  authenticateCode("qdaddysbbq", client, done);
-
-  attemptToCreateUser("test2", "test", 3, client, done);
-  attemptToCreateUser("jwu42", "imamonkey", 4, client, done);
-});
-
 function authenticateCode(code, client, done) {
   let codeIsValid = false;
   pool.connect(function(err, client, done) {
@@ -137,12 +129,12 @@ wss.on("connection", function connection(ws, req) {
 
   clients.push (ws);
 
-  let message = {
+  let serverMessage = {
     type: "clientinfo",
     clientID: clients.length-1
   };
 
-  ws.send(JSON.stringify(message));
+  ws.send(JSON.stringify(serverMessage));
 
   ws.onmessage = function(event) {
     let message = JSON.parse(event.data);
@@ -161,6 +153,7 @@ wss.on("connection", function connection(ws, req) {
       pool.connect(function(err, client, done) {
         if (err) return console.error(err);
         authenticateUserInfo (message, client, done);
+        console.log (clients [message.clientID].username);
       });
 
       if (clients [message.clientID].hasOwnProperty ("username")) {
