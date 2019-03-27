@@ -109,8 +109,8 @@ function attemptToCreateUser(data, id, client, done) {
       if (err) return console.error(err);
       for (let i = 0; i < result.rows.length; i++) {
         let name = result.rows[i].username;
-        if (username == name) {
-          console.log(username + " is taken!");
+        if (data.username == name) {
+          console.log(data.username + " is taken!");
           usernameIsTaken = true;
         }
     }
