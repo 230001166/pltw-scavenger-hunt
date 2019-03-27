@@ -24,6 +24,7 @@ const server = express()
 const wss = new SocketServer({ server, clientTracking: true });
 
 let clients = [];
+let amountOfUsers = 0;
 
 function authenticateCode(wss, code, clientID, client, done) {
   let codeIsValid = false;
@@ -153,11 +154,11 @@ function getAmountOfExistingUsers(client, done) {
     client.query("SELECT * FROM users", function(err, result) {
       done();
       if (err) return console.error(err);
-      let amountOfUsers = result.rows.length;
+      amountOfUsers = result.rows.length;
       console.log(amountOfUsers + " users exist.");
-      return amountOfUsers;
     });
   });
+  return amountOfUsers;
 }
 
 function createUniqueIdentifier() {
