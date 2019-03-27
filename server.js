@@ -140,7 +140,8 @@ function idIsInvalid(id, client, done) {
     client.query("SELECT id FROM users", function(err, result) {
       done();
       if (err) return console.error(err);
-      if (id <= getAmountOfExistingUsers(client, done)) {
+      updateAmountOfExistingUsers ();
+      if (id <= amountOfUsers) {
         return true;
       } else {
         return false;
@@ -149,7 +150,7 @@ function idIsInvalid(id, client, done) {
   });
 }
 
-function getAmountOfExistingUsers(client, done) {
+function updateAmountOfExistingUsers() {
   pool.connect(function(err, client, done) {
     client.query("SELECT * FROM users", function(err, result) {
       done();
@@ -158,7 +159,6 @@ function getAmountOfExistingUsers(client, done) {
       console.log(amountOfUsers + " users exist.");
     });
   });
-  return amountOfUsers;
 }
 
 function setAmountOfUsers (amount) {
@@ -241,9 +241,10 @@ wss.on("connection", function connection(ws, req) {
     if (message.type === "newuserinfo") {
       pool.connect(function(err, client, done) {
         if (err) return console.error(err);
+        updateAmountOfExistingUsers ();
         attemptToCreateUser(
           message,
-          getAmountOfExistingUsers(client, done) + 1,
+          amountOfUsers + 1,
           client,
           done
         );
