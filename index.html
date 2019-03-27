@@ -26,7 +26,7 @@
 </div>
 <div id = "bottom-bar">
 	<button id = "upload-qr-code" onclick = "inputCode()">Upload code</button>
-	<button id = "see-scanned-codes">See scanned codes</button>
+	<button id = "see-scanned-codes" onclick = "requestVisitedSpots ()">See scanned codes</button>
 </div>
 <script>
 	var HOST = location.origin.replace(/^http/, "ws");
@@ -105,6 +105,13 @@
 			type: "userinfo",
 		};
 		ws.send(JSON.stringify(message));
+	}
+
+	function requestVisitedSpots () {
+		let message = {
+			type: "visitedspots",
+		}
+		ws.send (JSON.stringify (message));
 	}
   </script>
 </body>
