@@ -102,16 +102,16 @@ function attemptToCreateUser(data, id, client, done) {
   } else {
     console.log("ID is not taken!");
   }
-  if (usernameIsTaken(username, client, done) === false) {
+  if (usernameIsTaken(data.username, client, done) === false) {
     pool.connect(function(err, client, done) {
       const text =
         "INSERT INTO users(id, username, password, visitedspots) VALUES($1, $2, $3, $4)";
-      const values = [id, username, password, " "];
+      const values = [id, data.username, data.password, " "];
 
       client.query(text, values, function(err, result) {
         done();
         if (err) return console.error(err);
-        console.log("User " + username + " created!");
+        console.log("User " + data.username + " created!");
         setClientUsername (wss, data, data.username);
       });
     });
