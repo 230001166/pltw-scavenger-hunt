@@ -36,7 +36,7 @@ function authenticateCode(wss, code, clientID, client, done) {
         if (spotCode == code) {
           codeIsValid = true;
           console.log(code + " was valid.");
-          sendSpotInformationToUser (wss, result.rows [i], clientID);
+          sendSpotInformationToUser(wss, result.rows[i], clientID);
         }
       }
       if (!codeIsValid) {
@@ -46,18 +46,18 @@ function authenticateCode(wss, code, clientID, client, done) {
   });
 }
 
-function sendSpotInformationToUser (wss, spot, clientID) {
+function sendSpotInformationToUser(wss, spot, clientID) {
   let userMessage = {
     type: "spotinfo",
     wildlifeName: spot.wildlifename,
     wildlifeDescription: spot.wildlifedescription,
-    username: clients [clientID].username,
+    username: clients[clientID].username
   };
 
-  wss.clients [clientID].send(JSON.stringify(userMessage));    
+  wss.clients[clientID].send(JSON.stringify(userMessage));
 }
 
-function authenticateUserInfo (wss, data, client, done) {
+function authenticateUserInfo(wss, data, client, done) {
   pool.connect(function(err, client, done) {
     client.query("SELECT username, password FROM users", function(err, result) {
       done();
@@ -65,40 +65,42 @@ function authenticateUserInfo (wss, data, client, done) {
       for (let i = 0; i < result.rows.length; i++) {
         let retrievedUsername = result.rows[i].username;
         let retrievedPassword = result.rows[i].password;
-        if (data.username === retrievedUsername && data.password === retrievedPassword) {
+        if (
+          data.username === retrievedUsername &&
+          data.password === retrievedPassword
+        ) {
           console.log(data.username + " was valid.");
-          setClientUsername (wss, data, retrievedUsername);
+          setClientUsername(wss, data, retrievedUsername);
         }
       }
     });
-    
   });
 }
 
-function setClientUsername (wss, data, username) {
-  let clientID = returnIndexFromUniqueIdentifier (data.uniqueID);
-  clients [clientID].username = username;
-  console.log (data + "\nUsername " + clients [clientID].username);
-  console.log ("Sending user info...");
+function setClientUsername(wss, data, username) {
+  let clientID = returnIndexFromUniqueIdentifier(data.uniqueID);
+  clients[clientID].username = username;
+  console.log(data + "\nUsername " + clients[clientID].username);
+  console.log("Sending user info...");
   let userMessage = {
     type: "userinfo",
-    username: clients [clientID].username,
+    username: clients[clientID].username
   };
-    
-  console.log (userMessage.username);
-  wss.clients [clientID].send(JSON.stringify(userMessage));  
+
+  console.log(userMessage.username);
+  wss.clients[clientID].send(JSON.stringify(userMessage));
 }
 
-function disconnectClient (index) {
-  clients.splice (index, 1);
+function disconnectClient(index) {
+  clients.splice(index, 1);
 }
 
-function attemptToCreateUser(username, password, id, client, done) {
+function attemptToCreateUser(data, id, client, done) {
   if (idIsInvalid(id, client, done)) {
     console.log("[!] - Invalid ID for username");
     return;
   } else {
-    console.log ("ID is not taken!");
+    console.log("ID is not taken!");
   }
   if (usernameIsTaken(username, client, done) === false) {
     pool.connect(function(err, client, done) {
@@ -110,6 +112,7 @@ function attemptToCreateUser(username, password, id, client, done) {
         done();
         if (err) return console.error(err);
         console.log("User " + username + " created!");
+        setClientUsername (wss, data, data.username);
       });
     });
   }
@@ -133,14 +136,18 @@ function usernameIsTaken(username, client, done) {
   });
 }
 
-function idIsInvalid (id, client, done) {
+function idIsInvalid(id, client, done) {
   pool.connect(function(err, client, done) {
     client.query("SELECT id FROM users", function(err, result) {
       done();
       if (err) return console.error(err);
-      if (id <= getAmountOfExistingUsers (client, done)) { return true; } else { return false; }
+      if (id <= getAmountOfExistingUsers(client, done)) {
+        return true;
+      } else {
+        return false;
+      }
     });
-  }); 
+  });
 }
 
 function getAmountOfExistingUsers(client, done) {
@@ -155,24 +162,25 @@ function getAmountOfExistingUsers(client, done) {
   });
 }
 
-function createUniqueIdentifier () {
-  let isUnique = false; let uniqueIdentifier = 0;
+function createUniqueIdentifier() {
+  let isUnique = false;
+  let uniqueIdentifier = 0;
   while (!isUnique) {
     isUnique = true;
     for (let i = 0; i < clients.length; i++) {
-      if (uniqueIdentifier == clients [i].uniqueIdentifier) {
+      if (uniqueIdentifier == clients[i].uniqueIdentifier) {
         isUnique = false;
       }
     }
 
     if (!isUnique) {
-      uniqueIdentifier = Math.floor (Math.random () * 10000000)
+      uniqueIdentifier = Math.floor(Math.random() * 10000000);
     }
   }
   return uniqueIdentifier;
 }
 
-function returnIndexFromUniqueIdentifier (uniqueIdentifier) {
+function returnIndexFromUniqueIdentifier(uniqueIdentifier) {
   let clientIndex = 0;
   clients.forEach((client, index) => {
     if (client.uniqueIdentifier == uniqueIdentifier) {
@@ -184,14 +192,13 @@ function returnIndexFromUniqueIdentifier (uniqueIdentifier) {
 }
 
 wss.on("connection", function connection(ws, req) {
-
-  ws.clientID = clients.length-1;
-  ws.uniqueIdentifier = createUniqueIdentifier ();
-  clients.push (ws);
+  ws.clientID = clients.length - 1;
+  ws.uniqueIdentifier = createUniqueIdentifier();
+  clients.push(ws);
 
   let serverMessage = {
     type: "clientinfo",
-    uniqueID: clients [clients.length-1].uniqueIdentifier
+    uniqueID: clients[clients.length - 1].uniqueIdentifier
   };
 
   ws.send(JSON.stringify(serverMessage));
@@ -204,30 +211,54 @@ wss.on("connection", function connection(ws, req) {
 
       pool.connect(function(err, client, done) {
         if (err) return console.error(err);
-        authenticateCode(wss, message.code, returnIndexFromUniqueIdentifier (message.uniqueID), client, done);
+        authenticateCode(
+          wss,
+          message.code,
+          returnIndexFromUniqueIdentifier(message.uniqueID),
+          client,
+          done
+        );
       });
     }
     if (message.type === "userinfo") {
-      console.log("Username " + message.username + " and password " + message.password + " inputted from client " + returnIndexFromUniqueIdentifier (message.uniqueID));
+      console.log(
+        "Username " +
+          message.username +
+          " and password " +
+          message.password +
+          " inputted from client " +
+          returnIndexFromUniqueIdentifier(message.uniqueID)
+      );
 
       pool.connect(function(err, client, done) {
         if (err) return console.error(err);
-        authenticateUserInfo (wss, message, client, done);
+        authenticateUserInfo(wss, message, client, done);
       });
- 
+    }
+    if (message.type === "newuserinfo") {
+      pool.connect(function(err, client, done) {
+        if (err) return console.error(err);
+        attemptToCreateUser(
+          message,
+          getAmountOfExistingUsers(client, done) + 1,
+          client,
+          done
+        );
+      });
     }
   };
 
-  ws.on ("close", () => {
-    disconnectClient (returnIndexFromUniqueIdentifier (ws.uniqueIdentifier));
+  ws.on("close", () => {
+    disconnectClient(returnIndexFromUniqueIdentifier(ws.uniqueIdentifier));
   });
 });
 
 setInterval(() => {
   wss.clients.forEach(client => {
-    let date = { 
+    let date = {
       type: "date",
-      text: new Date().toTimeString() };
+      text: new Date().toTimeString()
+    };
     client.send(JSON.stringify(date));
   });
 }, 1000);

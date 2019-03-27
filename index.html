@@ -12,6 +12,7 @@
 		<p id = "hello-user"></p>
 		<button id = "sign-in" onclick = "inputUserInfo()">Sign In</button>
 		<button id = "sign-out" onclick = "signOutUser()">Sign Out</button>
+		<button id = "create-user" onclick = "inputNewUserInfo ()">Create New User</button>
 	</div>
 </head>
 
@@ -75,6 +76,21 @@
 				password: password,
 				uniqueID: uniqueID,
 				type: "userinfo",
+			};
+			ws.send(JSON.stringify(message));
+		}
+	}
+
+	function inputNewUserInfo () {
+		var username = prompt ("Please enter a username.");
+		var password = prompt ("Please enter a password.");
+
+		if (username != "" && username != null && password != "" && password != null) {
+			let message = {
+				username: username,
+				password: password,
+				uniqueID: uniqueID,
+				type: "newuserinfo",
 			};
 			ws.send(JSON.stringify(message));
 		}
