@@ -117,9 +117,10 @@ function attemptToCreateUser(data) {
 
 if (!usernameIsTaken) {
   pool.connect(function(err, client, done) {
+    let visitedspots = [];
     const text =
       "INSERT INTO users(username, password, visitedspots) VALUES($1, $2, $3)";
-  const values = [data.username, data.password, " "];
+  const values = [data.username, data.password, JSON.stringify (visitedspots)];
 
   client.query(text, values, function(err, result) {
     done();
