@@ -60,7 +60,15 @@ function sendSpotInformationToUser(wss, spot, clientID) {
 }
 
 function updateVisitedSpots (spot, clientID) {
-  storeVisitedSpotInformation (clientID);
+  pool.connect(function(err, client, done) {
+    client.query("SELECT visitedspots FROM users", function(err, result) {
+      done();
+      if (err) return console.error(err);
+      let userID = 0; getIDFromUsername (clientID, userID);
+      storeVisitedSpotInformation (clientID, JSON.parse (result.rows [userID].visitedspots)
+      );
+    });
+  });  
   clients [clientID].spots.push (spot);
   pool.connect(function(err, client, done) {
     const text =
@@ -74,15 +82,8 @@ function updateVisitedSpots (spot, clientID) {
   });
 }
 
-function storeVisitedSpotInformation (clientID) {
-  pool.connect(function(err, client, done) {
-    client.query("SELECT visitedspots FROM users", function(err, result) {
-      done();
-      if (err) return console.error(err);
-      let userID = 0; getIDFromUsername (clientID, userID); console.log ("Retrieved user row number " + userID);
-      clients [clientID].spots = JSON.parse (result.rows [userID].visitedspots);
-    });
-  });  
+function storeVisitedSpotInformation (clientID, spots) {
+  clients [clientID].spots = spots;
 }
 
 function getIDFromUsername (clientID, id) {
