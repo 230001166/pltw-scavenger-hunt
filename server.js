@@ -38,6 +38,7 @@ function authenticateCode(wss, code, clientID, client, done) {
           codeIsValid = true;
           console.log(code + " was valid.");
           sendSpotInformationToUser(wss, result.rows[i], clientID);
+          updateVisitedSpots (result.rows [i].name, clientID);
         }
       }
       if (!codeIsValid) {
@@ -56,6 +57,51 @@ function sendSpotInformationToUser(wss, spot, clientID) {
   };
 
   wss.clients[clientID].send(JSON.stringify(userMessage));
+}
+
+function updateVisitedSpots (spot, clientID) {
+  let visitedSpots = [];
+  storeVisitedSpotInformation (clientID, visitedSpots);
+  visitedSpots.push (spot);
+  pool.connect(function(err, client, done) {
+    let visitedspots = [];
+    const text =
+      "UPDATE users SET visitedspots = ($1) WHERE username = ($2)";
+  const values = [JSON.stringify (visitedspots), clients [clientID].username];
+
+  client.query(text, values, function(err, result) {
+    done();
+    if (err) return console.error(err);
+  });
+  });
+}
+
+function storeVisitedSpotInformation (clientID, spots) {
+  pool.connect(function(err, client, done) {
+    client.query("SELECT visitedspots FROM users", function(err, result) {
+      done();
+      if (err) return console.error(err);
+      let userID = 0; getIDFromUsername (clientID, userID);
+      spots = JSON.parse (result.rows [userID].visitedspots);
+    });
+  });  
+}
+
+function getIDFromUsername (clientID, id) {
+  pool.connect(function(err, client, done) {
+    client.query("SELECT username FROM users", function(err, result) {
+      done();
+      if (err) return console.error(err);
+      for (let i = 0; i < result.rows.length; i++) {
+        let retrievedUsername = result.rows[i].username;
+        if (
+          clients [clientID].username === retrievedUsername
+        ) {
+          id = i;
+        }
+      }
+    });
+  });
 }
 
 function authenticateUserInfo(wss, data, client, done) {
