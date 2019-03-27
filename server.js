@@ -102,23 +102,7 @@ function attemptToCreateUser(data, id, client, done) {
   } else {
     console.log("ID is not taken!");
   }
-  if (usernameIsTaken(data.username, client, done) === false) {
-    pool.connect(function(err, client, done) {
-      const text =
-        "INSERT INTO users(id, username, password, visitedspots) VALUES($1, $2, $3, $4)";
-      const values = [id, data.username, data.password, " "];
-
-      client.query(text, values, function(err, result) {
-        done();
-        if (err) return console.error(err);
-        console.log("User " + data.username + " created!");
-        setClientUsername (wss, data, data.username);
-      });
-    });
-  }
-}
-
-function usernameIsTaken(username, client, done) {
+  let usernameIsTaken = false;
   pool.connect(function(err, client, done) {
     client.query("SELECT username FROM users", function(err, result) {
       done();
@@ -127,13 +111,27 @@ function usernameIsTaken(username, client, done) {
         let name = result.rows[i].username;
         if (username == name) {
           console.log(username + " is taken!");
-          return true;
+          usernameIsTaken = true;
         }
-      }
-      console.log("Username is available!");
-      return false;
-    });
+    }
+    console.log("Username is available!");
   });
+}); 
+
+if (!usernameIsTaken) {
+  pool.connect(function(err, client, done) {
+    const text =
+      "INSERT INTO users(id, username, password, visitedspots) VALUES($1, $2, $3, $4)";
+  const values = [id, data.username, data.password, " "];
+
+  client.query(text, values, function(err, result) {
+    done();
+    if (err) return console.error(err);
+    console.log("User " + data.username + " created!");
+    setClientUsername (wss, data, data.username);
+  });
+  });
+}
 }
 
 function idIsInvalid(id, client, done) {
