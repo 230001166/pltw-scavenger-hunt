@@ -60,8 +60,8 @@ function sendSpotInformationToUser(wss, spot, clientID) {
 }
 
 function updateVisitedSpots (spot, clientID) {
-  let visitedSpots = [];
-  storeVisitedSpotInformation (clientID, visitedSpots);
+  storeVisitedSpotInformation (clientID);
+  let visitedSpots = clients [clientID].spots;
   visitedSpots.push (spot);
   pool.connect(function(err, client, done) {
     const text =
@@ -75,13 +75,13 @@ function updateVisitedSpots (spot, clientID) {
   });
 }
 
-function storeVisitedSpotInformation (clientID, spots) {
+function storeVisitedSpotInformation (clientID) {
   pool.connect(function(err, client, done) {
     client.query("SELECT visitedspots FROM users", function(err, result) {
       done();
       if (err) return console.error(err);
       let userID = 0; getIDFromUsername (clientID, userID); console.log ("Retrieved user row number " + userID);
-      spots = JSON.parse (result.rows [userID].visitedspots);
+      clients [clientID].spots = JSON.parse (result.rows [userID].visitedspots);
     });
   });  
 }
