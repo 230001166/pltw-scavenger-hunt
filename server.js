@@ -267,10 +267,7 @@ wss.on("connection", function connection(ws, req) {
         client.query("SELECT visitedspots FROM users", function(err, result) {
           done();
           if (err) return console.error(err);
-          getIDFromUsername (returnIndexFromUniqueIdentifier(message.uniqueID));
-          console.log (id);
-          console.log (result.rows [id].visitedspots);
-          sendVisitedSpots (result.rows [id], returnIndexFromUniqueIdentifier(message.uniqueID));
+          prepareAndSendSpotInformation (result, message);
         });
       });
     }
@@ -280,6 +277,11 @@ wss.on("connection", function connection(ws, req) {
     disconnectClient(returnIndexFromUniqueIdentifier(ws.uniqueIdentifier));
   });
 });
+
+function prepareAndSendSpotInformation (result, message) {
+  getIDFromUsername (returnIndexFromUniqueIdentifier(message.uniqueID));
+  sendVisitedSpots (result.rows [id], returnIndexFromUniqueIdentifier(message.uniqueID));
+}
 
 function sendVisitedSpots (data, clientID) {
   let message = {
