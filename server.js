@@ -267,6 +267,7 @@ wss.on("connection", function connection(ws, req) {
           done();
           if (err) return console.error(err);
           let clientID = returnIndexFromUniqueIdentifier(message.uniqueID);
+          console.log (result.rows [clientID].visitedspots);
           sendVisitedSpots (result.rows [clientID], clientID);
         });
       });
