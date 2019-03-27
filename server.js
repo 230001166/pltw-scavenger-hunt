@@ -25,6 +25,7 @@ const wss = new SocketServer({ server, clientTracking: true });
 
 let clients = [];
 let amountOfUsers = 0;
+let id = 0;
 
 function authenticateCode(wss, code, clientID, client, done) {
   let codeIsValid = false;
@@ -74,7 +75,7 @@ function updateVisitedSpots (spot, clientID) {
   });
 }
 
-function getIDFromUsername (clientID, id) {
+function getIDFromUsername (clientID) {
   pool.connect(function(err, client, done) {
     client.query("SELECT username FROM users", function(err, result) {
       done();
@@ -266,9 +267,9 @@ wss.on("connection", function connection(ws, req) {
         client.query("SELECT visitedspots FROM users", function(err, result) {
           done();
           if (err) return console.error(err);
-          let clientID = returnIndexFromUniqueIdentifier(message.uniqueID);
-          console.log (result.rows [clientID].visitedspots);
-          sendVisitedSpots (result.rows [clientID], clientID);
+          let userID = getIDFromUsername (returnIndexFromUniqueIdentifier(ws.uniqueIdentifier));
+          console.log (result.rows [userID].visitedspots);
+          sendVisitedSpots (result.rows [userID], clientID);
         });
       });
     }
