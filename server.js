@@ -96,14 +96,9 @@ function disconnectClient(index) {
   clients.splice(index, 1);
 }
 
-function attemptToCreateUser(data, id, client, done) {
+function attemptToCreateUser(data) {
   updateAmountOfExistingUsers ();
-  if (idIsInvalid(id, client, done)) {
-    console.log("[!] - Invalid ID for username");
-    return;
-  } else {
-    console.log("ID is not taken!");
-  }
+
   let usernameIsTaken = false;
   pool.connect(function(err, client, done) {
     client.query("SELECT username FROM users", function(err, result) {
@@ -123,8 +118,8 @@ function attemptToCreateUser(data, id, client, done) {
 if (!usernameIsTaken) {
   pool.connect(function(err, client, done) {
     const text =
-      "INSERT INTO users(id, username, password, visitedspots) VALUES($1, $2, $3, $4)";
-  const values = [id, data.username, data.password, " "];
+      "INSERT INTO users(username, password, visitedspots) VALUES($1, $2, $3)";
+  const values = [data.username, data.password, " "];
 
   client.query(text, values, function(err, result) {
     done();
@@ -134,21 +129,6 @@ if (!usernameIsTaken) {
   });
   });
 }
-}
-
-function idIsInvalid(id, client, done) {
-  pool.connect(function(err, client, done) {
-    client.query("SELECT id FROM users", function(err, result) {
-      done();
-      if (err) return console.error(err);
-      updateAmountOfExistingUsers ();
-      if (id <= amountOfUsers) {
-        return true;
-      } else {
-        return false;
-      }
-    });
-  });
 }
 
 function updateAmountOfExistingUsers() {
@@ -243,10 +223,7 @@ wss.on("connection", function connection(ws, req) {
       pool.connect(function(err, client, done) {
         if (err) return console.error(err);
         attemptToCreateUser(
-          message,
-          amountOfUsers + 1,
-          client,
-          done
+          message
         );
       });
     }
