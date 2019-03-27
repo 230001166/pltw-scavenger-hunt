@@ -261,12 +261,31 @@ wss.on("connection", function connection(ws, req) {
         );
       });
     }
+    if (message.type === "visitedspots") {
+      pool.connect(function(err, client, done) {
+        client.query("SELECT visitedspots FROM users", function(err, result) {
+          done();
+          if (err) return console.error(err);
+          let clientID = returnIndexFromUniqueIdentifier(message.uniqueID);
+          sendVisitedSpots (result.rows [clientID], clientID);
+        });
+      });
+    }
   };
 
   ws.on("close", () => {
     disconnectClient(returnIndexFromUniqueIdentifier(ws.uniqueIdentifier));
   });
 });
+
+function sendVisitedSpots (data, clientID) {
+  let message = {
+    type: "visitedspots",
+    spots: JSON.stringify (data.visitedspots)
+  }
+  wss.clients [clientID].send (JSON.stringify (message));
+}
+
 
 setInterval(() => {
   wss.clients.forEach(client => {

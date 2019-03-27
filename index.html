@@ -50,6 +50,9 @@
 			let wildlifeInfo = document.getElementById ("wildlife-info");
 			wildlifeName.innerHTML = message.wildlifeName;
 			wildlifeInfo.innerHTML = message.wildlifeDescription;
+		} else if (message.type === "visitedspots") {
+			let spotText = message.spots;
+			alert ("You have visited these spots: " + spotText);
 		}
 	};
 
@@ -109,6 +112,7 @@
 
 	function requestVisitedSpots () {
 		let message = {
+			uniqueID, uniqueID,
 			type: "visitedspots",
 		}
 		ws.send (JSON.stringify (message));
