@@ -60,30 +60,26 @@ function sendSpotInformationToUser(wss, spot, clientID) {
 }
 
 function updateVisitedSpots (spot, clientID) {
+  let visitedSpots = [];
   pool.connect(function(err, client, done) {
     client.query("SELECT visitedspots FROM users", function(err, result) {
       done();
       if (err) return console.error(err);
-      let userID = 0; getIDFromUsername (clientID, userID);
-      storeVisitedSpotInformation (clientID, JSON.parse (result.rows [userID].visitedspots)
-      );
+      let userID = 0; getIDFromUsername (clientID, userID); console.log ("Retrieved user row number " + userID);
+      visitedSpots = JSON.parse (result.rows [userID].visitedspots);
     });
   });  
-  clients [clientID].spots.push (spot);
+  visitedSpots.push (spot);
   pool.connect(function(err, client, done) {
     const text =
       "UPDATE users SET visitedspots = ($1) WHERE username = ($2)";
-  const values = [JSON.stringify (clients [clientID].spots), clients [clientID].username];
+  const values = [JSON.stringify (visitedSpots), clients [clientID].username];
   console.log (values + "DATABASE VALUES");
   client.query(text, values, function(err, result) {
     done();
     if (err) return console.error(err);
   });
   });
-}
-
-function storeVisitedSpotInformation (clientID, spots) {
-  clients [clientID].spots = spots;
 }
 
 function getIDFromUsername (clientID, id) {
@@ -224,7 +220,6 @@ function returnIndexFromUniqueIdentifier(uniqueIdentifier) {
 wss.on("connection", function connection(ws, req) {
   ws.clientID = clients.length - 1;
   ws.uniqueIdentifier = createUniqueIdentifier();
-  ws.spots = [];
   clients.push(ws);
 
   let serverMessage = {
