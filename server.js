@@ -154,11 +154,15 @@ function getAmountOfExistingUsers(client, done) {
     client.query("SELECT * FROM users", function(err, result) {
       done();
       if (err) return console.error(err);
-      amountOfUsers = result.rows.length;
+      setAmountOfUsers (result.rows.length);
       console.log(amountOfUsers + " users exist.");
     });
   });
   return amountOfUsers;
+}
+
+function setAmountOfUsers (amount) {
+  amountOfUsers = amount;
 }
 
 function createUniqueIdentifier() {
