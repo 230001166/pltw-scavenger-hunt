@@ -268,6 +268,7 @@ wss.on("connection", function connection(ws, req) {
           done();
           if (err) return console.error(err);
           let userID = getIDFromUsername (returnIndexFromUniqueIdentifier(ws.uniqueIdentifier));
+          console.log (userID);
           console.log (result.rows [userID].visitedspots);
           sendVisitedSpots (result.rows [userID], clientID);
         });
