@@ -64,11 +64,10 @@ function updateVisitedSpots (spot, clientID) {
   storeVisitedSpotInformation (clientID, visitedSpots);
   visitedSpots.push (spot);
   pool.connect(function(err, client, done) {
-    let visitedspots = [];
     const text =
       "UPDATE users SET visitedspots = ($1) WHERE username = ($2)";
-  const values = [JSON.stringify (visitedspots), clients [clientID].username];
-
+  const values = [JSON.stringify (visitedSpots), clients [clientID].username];
+  console.log (values + "DATABASE VALUES");
   client.query(text, values, function(err, result) {
     done();
     if (err) return console.error(err);
@@ -81,7 +80,7 @@ function storeVisitedSpotInformation (clientID, spots) {
     client.query("SELECT visitedspots FROM users", function(err, result) {
       done();
       if (err) return console.error(err);
-      let userID = 0; getIDFromUsername (clientID, userID);
+      let userID = 0; getIDFromUsername (clientID, userID); console.log ("Retrieved user row number " + userID);
       spots = JSON.parse (result.rows [userID].visitedspots);
     });
   });  
