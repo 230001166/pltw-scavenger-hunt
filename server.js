@@ -61,12 +61,11 @@ function sendSpotInformationToUser(wss, spot, clientID) {
 
 function updateVisitedSpots (spot, clientID) {
   storeVisitedSpotInformation (clientID);
-  let visitedSpots = clients [clientID].spots;
-  visitedSpots.push (spot);
+  clients [clientID].spots.push (spot);
   pool.connect(function(err, client, done) {
     const text =
       "UPDATE users SET visitedspots = ($1) WHERE username = ($2)";
-  const values = [JSON.stringify (visitedSpots), clients [clientID].username];
+  const values = [JSON.stringify (clients [clientID].spots), clients [clientID].username];
   console.log (values + "DATABASE VALUES");
   client.query(text, values, function(err, result) {
     done();
@@ -224,6 +223,7 @@ function returnIndexFromUniqueIdentifier(uniqueIdentifier) {
 wss.on("connection", function connection(ws, req) {
   ws.clientID = clients.length - 1;
   ws.uniqueIdentifier = createUniqueIdentifier();
+  ws.spots = [];
   clients.push(ws);
 
   let serverMessage = {
