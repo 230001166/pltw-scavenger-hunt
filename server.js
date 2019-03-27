@@ -267,11 +267,11 @@ wss.on("connection", function connection(ws, req) {
         client.query("SELECT visitedspots FROM users", function(err, result) {
           done();
           if (err) return console.error(err);
-          getIDFromUsername (returnIndexFromUniqueIdentifier(ws.uniqueIdentifier));
+          getIDFromUsername (returnIndexFromUniqueIdentifier(message.uniqueID));
           let userID = id;
           console.log (userID);
           console.log (result.rows [userID].visitedspots);
-          sendVisitedSpots (result.rows [userID], clientID);
+          sendVisitedSpots (result.rows [userID], returnIndexFromUniqueIdentifier(message.uniqueID));
         });
       });
     }
