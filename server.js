@@ -97,6 +97,7 @@ function disconnectClient(index) {
 }
 
 function attemptToCreateUser(data, id, client, done) {
+  updateAmountOfExistingUsers ();
   if (idIsInvalid(id, client, done)) {
     console.log("[!] - Invalid ID for username");
     return;
@@ -241,7 +242,6 @@ wss.on("connection", function connection(ws, req) {
     if (message.type === "newuserinfo") {
       pool.connect(function(err, client, done) {
         if (err) return console.error(err);
-        updateAmountOfExistingUsers ();
         attemptToCreateUser(
           message,
           amountOfUsers + 1,
