@@ -85,12 +85,14 @@ function getIDFromUsername (clientID) {
         if (
           clients [clientID].username === retrievedUsername
         ) {
-          id = i;
+          setID (i);
         }
       }
     });
   });
 }
+
+function setID (number) { id = number; }
 
 function authenticateUserInfo(wss, data, client, done) {
   pool.connect(function(err, client, done) {
