@@ -227,8 +227,7 @@ function returnIndexFromUniqueIdentifier(uniqueIdentifier) {
 
 wss.on("connection", function connection(ws, req) {
   ws.clientID = clients.length - 1;
-  const visitedSpots = [];
-  ws.visitedSpots = JSON.stringify (visitedSpots);
+  ws.visitedSpots = [];
   ws.uniqueIdentifier = createUniqueIdentifier();
   clients.push(ws);
 
