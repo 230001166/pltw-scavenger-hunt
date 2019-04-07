@@ -39,7 +39,7 @@ function authenticateCode(wss, code, clientID, client, done) {
           codeIsValid = true;
           console.log(code + " was valid.");
           sendSpotInformationToUser(wss, result.rows[i], clientID);
-          updateVisitedSpots (result.rows [i].name, clientID);
+          updateVisitedSpots(result.rows[i].name, clientID);
         }
       }
       if (!codeIsValid) {
@@ -60,60 +60,62 @@ function sendSpotInformationToUser(wss, spot, clientID) {
   wss.clients[clientID].send(JSON.stringify(userMessage));
 }
 
-function updateVisitedSpots (spot, clientID) {
+function updateVisitedSpots(spot, clientID) {
   pool.connect(function(err, client, done) {
-    loadClientVisitedSpots (clientID);
-    clients [clientID].visitedSpots.push (spot);
-    const text =
-      "UPDATE users SET visitedspots = ($1) WHERE username = ($2)";
-  const values = [JSON.stringify (clients [clientID].visitedSpots), clients [clientID].username];
-  console.log (values + "DATABASE VALUES");
-  client.query(text, values, function(err, result) {
-    done();
-    if (err) return console.error(err);
-  });
+    loadClientVisitedSpots(clientID);
+    clients[clientID].visitedSpots.push(spot);
+    const text = "UPDATE users SET visitedspots = ($1) WHERE username = ($2)";
+    const values = [
+      JSON.stringify(clients[clientID].visitedSpots),
+      clients[clientID].username
+    ];
+    console.log(values + "DATABASE VALUES");
+    client.query(text, values, function(err, result) {
+      done();
+      if (err) return console.error(err);
+    });
   });
 }
 
-function loadClientVisitedSpots (clientID) {
+function loadClientVisitedSpots(clientID) {
   pool.connect(function(err, client, done) {
     const queryText = "SELECT visitedspots FROM users WHERE username = ($1)";
-    const queryValues = [clients [clientID].username];
+    const queryValues = [clients[clientID].username];
     client.query(queryText, queryValues, function(err, result) {
       done();
       if (err) return console.error(err);
       for (let i = 0; i < result.rows.length; i++) {
-        let spots = JSON.parse (result.rows [i].visitedspots);
-        console.log ("SPOTS: " + spots);
-        setClientVisitedSpots (clientID, spots);
+        let spots = JSON.parse(result.rows[i].visitedspots);
+        console.log("SPOTS: " + spots);
+        setClientVisitedSpots(clientID, spots);
       }
     });
   });
-  console.log ("Visited spots: " + clients [clientID].visitedSpots);
+  console.log("Visited spots: " + clients[clientID].visitedSpots);
 }
 
-function setClientVisitedSpots (clientID, spots) {
-  clients [clientID].visitedSpots = spots;
+function setClientVisitedSpots(clientID, spots) {
+  clients[clientID].visitedSpots = spots.slice(0);
 }
 
-function getIDFromUsername (clientID) {
+function getIDFromUsername(clientID) {
   pool.connect(function(err, client, done) {
     client.query("SELECT username FROM users", function(err, result) {
       done();
       if (err) return console.error(err);
       for (let i = 0; i < result.rows.length; i++) {
         let retrievedUsername = result.rows[i].username;
-        if (
-          clients [clientID].username === retrievedUsername
-        ) {
-          setID (i);
+        if (clients[clientID].username === retrievedUsername) {
+          setID(i);
         }
       }
     });
   });
 }
 
-function setID (number) { id = number; }
+function setID(number) {
+  id = number;
+}
 
 function authenticateUserInfo(wss, data, client, done) {
   pool.connect(function(err, client, done) {
@@ -154,7 +156,7 @@ function disconnectClient(index) {
 }
 
 function attemptToCreateUser(data) {
-  updateAmountOfExistingUsers ();
+  updateAmountOfExistingUsers();
 
   let usernameIsTaken = false;
   pool.connect(function(err, client, done) {
@@ -167,26 +169,30 @@ function attemptToCreateUser(data) {
           console.log(data.username + " is taken!");
           usernameIsTaken = true;
         }
-    }
-    console.log("Username is available!");
+      }
+      console.log("Username is available!");
+    });
   });
-}); 
 
-if (!usernameIsTaken) {
-  pool.connect(function(err, client, done) {
-    let visitedspots = [];
-    const text =
-      "INSERT INTO users(username, password, visitedspots) VALUES($1, $2, $3)";
-  const values = [data.username, data.password, JSON.stringify (visitedspots)];
+  if (!usernameIsTaken) {
+    pool.connect(function(err, client, done) {
+      let visitedspots = [];
+      const text =
+        "INSERT INTO users(username, password, visitedspots) VALUES($1, $2, $3)";
+      const values = [
+        data.username,
+        data.password,
+        JSON.stringify(visitedspots)
+      ];
 
-  client.query(text, values, function(err, result) {
-    done();
-    if (err) return console.error(err);
-    console.log("User " + data.username + " created!");
-    setClientUsername (wss, data, data.username);
-  });
-  });
-}
+      client.query(text, values, function(err, result) {
+        done();
+        if (err) return console.error(err);
+        console.log("User " + data.username + " created!");
+        setClientUsername(wss, data, data.username);
+      });
+    });
+  }
 }
 
 function updateAmountOfExistingUsers() {
@@ -194,13 +200,13 @@ function updateAmountOfExistingUsers() {
     client.query("SELECT * FROM users", function(err, result) {
       done();
       if (err) return console.error(err);
-      setAmountOfUsers (result.rows.length);
+      setAmountOfUsers(result.rows.length);
       console.log(amountOfUsers + " users exist.");
     });
   });
 }
 
-function setAmountOfUsers (amount) {
+function setAmountOfUsers(amount) {
   amountOfUsers = amount;
 }
 
@@ -281,9 +287,7 @@ wss.on("connection", function connection(ws, req) {
     if (message.type === "newuserinfo") {
       pool.connect(function(err, client, done) {
         if (err) return console.error(err);
-        attemptToCreateUser(
-          message
-        );
+        attemptToCreateUser(message);
       });
     }
     if (message.type === "visitedspots") {
@@ -291,7 +295,7 @@ wss.on("connection", function connection(ws, req) {
         client.query("SELECT visitedspots FROM users", function(err, result) {
           done();
           if (err) return console.error(err);
-          prepareAndSendSpotInformation (result, message);
+          prepareAndSendSpotInformation(result, message);
         });
       });
     }
@@ -302,19 +306,21 @@ wss.on("connection", function connection(ws, req) {
   });
 });
 
-function prepareAndSendSpotInformation (result, message) {
-  getIDFromUsername (returnIndexFromUniqueIdentifier(message.uniqueID));
-  sendVisitedSpots (result.rows [id], returnIndexFromUniqueIdentifier(message.uniqueID));
+function prepareAndSendSpotInformation(result, message) {
+  getIDFromUsername(returnIndexFromUniqueIdentifier(message.uniqueID));
+  sendVisitedSpots(
+    result.rows[id],
+    returnIndexFromUniqueIdentifier(message.uniqueID)
+  );
 }
 
-function sendVisitedSpots (data, clientID) {
+function sendVisitedSpots(data, clientID) {
   let message = {
     type: "visitedspots",
-    spots: JSON.stringify (data.visitedspots)
-  }
-  wss.clients [clientID].send (JSON.stringify (message));
+    spots: JSON.stringify(data.visitedspots)
+  };
+  wss.clients[clientID].send(JSON.stringify(message));
 }
-
 
 setInterval(() => {
   wss.clients.forEach(client => {
