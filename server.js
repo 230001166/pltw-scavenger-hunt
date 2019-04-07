@@ -62,7 +62,7 @@ function sendSpotInformationToUser(wss, spot, clientID) {
 
 function updateVisitedSpots (spot, clientID) {
   pool.connect(function(err, client, done) {
-    setClientVisitedSpots (clientID);
+    loadClientVisitedSpots (clientID);
     clients [clientID].visitedSpots.push (spot);
     const text =
       "UPDATE users SET visitedspots = ($1) WHERE username = ($2)";
@@ -75,7 +75,7 @@ function updateVisitedSpots (spot, clientID) {
   });
 }
 
-function setClientVisitedSpots (clientID) {
+function loadClientVisitedSpots (clientID) {
   pool.connect(function(err, client, done) {
     const queryText = "SELECT visitedspots FROM users WHERE username = ($1)";
     const queryValues = [clients [clientID].username];
@@ -85,11 +85,15 @@ function setClientVisitedSpots (clientID) {
       for (let i = 0; i < result.rows.length; i++) {
         let spots = JSON.parse (result.rows [i].visitedspots);
         console.log ("SPOTS: " + spots);
-        clients [clientID].visitedSpots = spots;
+        setClientVisitedSpots (clientID, spots);
       }
     });
   });
   console.log ("Visited spots: " + clients [clientID].visitedSpots);
+}
+
+function setClientVisitedSpots (clientID, spots) {
+  clients [clientID].visitedSpots = spots;
 }
 
 function getIDFromUsername (clientID) {
