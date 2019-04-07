@@ -44,6 +44,7 @@ function authenticateCode(wss, code, clientID, client, done) {
       }
       if (!codeIsValid) {
         console.log("code not valid.");
+        sendClientAlert ("The code was not valid.", clientID);
       }
     });
   });
