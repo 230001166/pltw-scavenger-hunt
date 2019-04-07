@@ -62,7 +62,6 @@ function sendSpotInformationToUser(wss, spot, clientID) {
 
 function updateVisitedSpots (spot, clientID) {
   pool.connect(function(err, client, done) {
-    let visitedSpots = [];
     const queryText = "SELECT visitedspots FROM users WHERE username = ($1)";
     const queryValues = [clients [clientID].username];
     client.query(queryText, queryValues, function(err, result) {
@@ -70,13 +69,13 @@ function updateVisitedSpots (spot, clientID) {
       if (err) return console.error(err);
       for (let i = 0; i < result.rows.length; i++) {
         let spots = JSON.parse (result.rows [i].visitedspots);
-        setVisitedSpots (visitedSpots, spots);
+        setVisitedSpots (clients [clientID].visitedSpots, spots);
       }
     });
-    visitedSpots.push (spot);
+    clients [clientID]. visitedSpots.push (spot);
     const text =
       "UPDATE users SET visitedspots = ($1) WHERE username = ($2)";
-  const values = [JSON.stringify (visitedSpots), clients [clientID].username];
+  const values = [JSON.stringify (clients [clientID].visitedSpots), clients [clientID].username];
   console.log (values + "DATABASE VALUES");
   client.query(text, values, function(err, result) {
     done();
