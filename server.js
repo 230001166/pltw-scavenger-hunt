@@ -84,12 +84,12 @@ function setClientVisitedSpots (clientID) {
       if (err) return console.error(err);
       for (let i = 0; i < result.rows.length; i++) {
         let spots = JSON.parse (result.rows [i].visitedspots);
-        console.log (spots);
+        console.log ("SPOTS: " + spots);
         clients [clientID].visitedSpots = spots;
       }
     });
   });
-  console.log (clients [clientID].visitedSpots);
+  console.log ("Visited spots: " + clients [clientID].visitedSpots);
 }
 
 function getIDFromUsername (clientID) {
