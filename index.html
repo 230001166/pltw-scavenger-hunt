@@ -53,7 +53,13 @@
 		} else if (message.type === "visitedspots") {
 			let spotData = JSON.parse (message.spots);
 			let spotString = "You have visited these spots: \n";
-			alert (spotString + spotData);
+			for (let i = 0; i < spotData.length; i++) {
+				spotString += spotData [i];
+				if (spotData [i] === ',') {
+					spotString += "\n";
+				}
+			}
+			alert (spotString);
 		}
 	};
 
