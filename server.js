@@ -72,7 +72,7 @@ function updateVisitedSpots (spot, clientID) {
         setVisitedSpots (clients [clientID].visitedSpots, spots);
       }
     });
-    clients [clientID]. visitedSpots.push (spot);
+    clients [clientID].visitedSpots.push (spot);
     const text =
       "UPDATE users SET visitedspots = ($1) WHERE username = ($2)";
   const values = [JSON.stringify (clients [clientID].visitedSpots), clients [clientID].username];
