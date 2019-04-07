@@ -51,8 +51,13 @@
 			wildlifeName.innerHTML = message.wildlifeName;
 			wildlifeInfo.innerHTML = message.wildlifeDescription;
 		} else if (message.type === "visitedspots") {
-			let spotText = message.spots;
-			alert ("You have visited these spots: " + spotText);
+			let spotData = JSON.parse (message.spots);
+			let spotString = "You have visited these spots: \n";
+			for (let i = 0; i < spotData.length; i++) {
+				spotString += spotData [i];
+				spotString += "\n";
+			}
+			alert (spotString);
 		}
 	};
 
