@@ -95,9 +95,9 @@ function loadClientVisitedSpots(clientID) {
 }
 
 function setClientVisitedSpots(clientID, spots) {
-  clients [clientID].visitedSpots = [];
+  clients[clientID].visitedSpots = [];
   for (let i = 0; i < spots.length; i++) {
-    clients[clientID].visitedSpots.push (spots [i]);
+    clients[clientID].visitedSpots.push(spots[i]);
   }
 }
 
@@ -126,6 +126,7 @@ function authenticateUserInfo(wss, data, client, done) {
     client.query("SELECT username, password FROM users", function(err, result) {
       done();
       if (err) return console.error(err);
+      let usernameIsValid = false;
       for (let i = 0; i < result.rows.length; i++) {
         let retrievedUsername = result.rows[i].username;
         let retrievedPassword = result.rows[i].password;
@@ -135,15 +136,18 @@ function authenticateUserInfo(wss, data, client, done) {
         ) {
           console.log(data.username + " was valid.");
           setClientUsername(wss, data, retrievedUsername);
-        } else {
-          sendClientAlert ("The username and password were invalid.", clientID);
+          usernameIsValid = true;
         }
+      }
+
+      if (!usernameIsValid) {
+        sendClientAlert("The username and password were invalid.", clientID);
       }
     });
   });
 }
 
-function sendClientAlert (text, clientID) {
+function sendClientAlert(text, clientID) {
   let message = {
     type: "alert",
     text: text
