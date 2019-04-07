@@ -121,6 +121,7 @@ function setID(number) {
 }
 
 function authenticateUserInfo(wss, data, client, done) {
+  let clientID = returnIndexFromUniqueIdentifier(data.uniqueID);
   pool.connect(function(err, client, done) {
     client.query("SELECT username, password FROM users", function(err, result) {
       done();
@@ -134,10 +135,20 @@ function authenticateUserInfo(wss, data, client, done) {
         ) {
           console.log(data.username + " was valid.");
           setClientUsername(wss, data, retrievedUsername);
+        } else {
+          sendClientAlert ("The username and password were invalid.", clientID);
         }
       }
     });
   });
+}
+
+function sendClientAlert (text, clientID) {
+  let message = {
+    type: "alert",
+    text: text
+  };
+  wss.clients[clientID].send(JSON.stringify(message));
 }
 
 function setClientUsername(wss, data, username) {

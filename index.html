@@ -61,7 +61,9 @@
 				}
 			}
 			alert (spotString);
-		}
+		} else if (message.type === "alert") {
+			alert (message.text);
+		} 
 	};
 
 	function inputCode () {
