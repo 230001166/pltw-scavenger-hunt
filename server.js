@@ -55,7 +55,8 @@ function sendSpotInformationToUser(wss, spot, clientID) {
     type: "spotinfo",
     wildlifeName: spot.wildlifename,
     wildlifeDescription: spot.wildlifedescription,
-    username: clients[clientID].username
+    username: clients[clientID].username,
+    imageFilename: spot.imagefilename
   };
 
   wss.clients[clientID].send(JSON.stringify(userMessage));

@@ -20,7 +20,7 @@
 <p>Cool text</p>
 <p id = "time"></p>
 <div id = "wildlife-information">
-	<img id = "wildlife-picture" src = "https://s3.amazonaws.com/pltw-scavenger-hunt-resources/jefferey.png" width = "400" height = "250"></img>
+	<img id = "wildlife-picture" src = "https://s3.amazonaws.com/pltw-scavenger-hunt-resources/ width = "400" height = "250"></img>
 	<p id = "wildlife-name">Test</p>
 	<p id = "wildlife-info">Test test</p>
 </div>
@@ -48,8 +48,10 @@
 		} else if (message.type === "spotinfo") {
 			let wildlifeName = document.getElementById ("wildlife-name");
 			let wildlifeInfo = document.getElementById ("wildlife-info");
+			let wildlifePicture = document.getElementById ("wildlife-picture");
 			wildlifeName.innerHTML = message.wildlifeName;
 			wildlifeInfo.innerHTML = message.wildlifeDescription;
+			wildlifePicture.src =  "https://s3.amazonaws.com/pltw-scavenger-hunt-resources/" + message.imageFilename;
 		} else if (message.type === "visitedspots") {
 			let spotData = JSON.parse (message.spots);
 			let spotString = "You have visited these spots: \n";
