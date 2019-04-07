@@ -54,11 +54,13 @@
 			let spotData = JSON.parse (message.spots);
 			let spotString = "You have visited these spots: \n";
 			for (let i = 0; i < spotData.length; i++) {
+
 				spotString += spotData [i];
 				if (spotData [i] === ',') {
 					spotString += "\n";
 				}
 			}
+			spotString = spotString.slice (1, spotString.length - 2);
 			alert (spotString);
 		}
 	};
