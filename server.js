@@ -62,16 +62,7 @@ function sendSpotInformationToUser(wss, spot, clientID) {
 
 function updateVisitedSpots (spot, clientID) {
   pool.connect(function(err, client, done) {
-    const queryText = "SELECT visitedspots FROM users WHERE username = ($1)";
-    const queryValues = [clients [clientID].username];
-    client.query(queryText, queryValues, function(err, result) {
-      done();
-      if (err) return console.error(err);
-      for (let i = 0; i < result.rows.length; i++) {
-        let spots = JSON.parse (result.rows [i].visitedspots);
-        setVisitedSpots (clients [clientID].visitedSpots, spots);
-      }
-    });
+    setClientVisitedSpots (clientID);
     clients [clientID].visitedSpots.push (spot);
     const text =
       "UPDATE users SET visitedspots = ($1) WHERE username = ($2)";
@@ -84,9 +75,21 @@ function updateVisitedSpots (spot, clientID) {
   });
 }
 
-function setVisitedSpots (visitedSpots, spots) {
-  visitedSpots = spots;
-  console.log (visitedSpots);
+function setClientVisitedSpots (clientID) {
+  pool.connect(function(err, client, done) {
+    const queryText = "SELECT visitedspots FROM users WHERE username = ($1)";
+    const queryValues = [clients [clientID].username];
+    client.query(queryText, queryValues, function(err, result) {
+      done();
+      if (err) return console.error(err);
+      for (let i = 0; i < result.rows.length; i++) {
+        let spots = JSON.parse (result.rows [i].visitedspots);
+        console.log (spots);
+        clients [clientID].visitedSpots = spots;
+      }
+    });
+  });
+  console.log (clients [clientID].visitedSpots);
 }
 
 function getIDFromUsername (clientID) {
