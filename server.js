@@ -95,6 +95,7 @@ function loadClientVisitedSpots(clientID) {
 }
 
 function setClientVisitedSpots(clientID, spots) {
+  clients [clientID].visitedSpots = [];
   for (let i = 0; i < spots.length; i++) {
     clients[clientID].visitedSpots.push (spots [i]);
   }
