@@ -86,6 +86,7 @@ function updateVisitedSpots (spot, clientID) {
 
 function setVisitedSpots (visitedSpots, spots) {
   visitedSpots = spots;
+  console.log (visitedSpots);
 }
 
 function getIDFromUsername (clientID) {
